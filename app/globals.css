@@ -1,0 +1,144 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* The design system: a metro map. White ground, saturated line colors, black signage.
+   --t-* are the surfaces and type colors, --line-N the eleven line colors (each with an -ink
+   for text on top of it). Components and figures read these, so both themes come from here. */
+
+@theme inline {
+  --color-background: var(--t-ground);
+  --color-foreground: var(--t-ink);
+  --font-sans: var(--transit-text);
+  --font-heading: var(--transit-sign);
+  --color-ring: var(--t-link);
+  --color-input: var(--t-rule);
+  --color-border: var(--t-rule);
+  --color-destructive: var(--line-0);
+  --color-accent: var(--t-panel);
+  --color-accent-foreground: var(--t-ink);
+  --color-muted: var(--t-panel);
+  --color-muted-foreground: var(--t-ink-2);
+  --color-secondary: var(--t-panel);
+  --color-secondary-foreground: var(--t-ink);
+  --color-primary: var(--t-ink);
+  --color-primary-foreground: var(--t-on-ink);
+  --color-popover: var(--t-surface);
+  --color-popover-foreground: var(--t-ink);
+  --color-card: var(--t-surface);
+  --color-card-foreground: var(--t-ink);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+}
+
+:root {
+  color-scheme: light;
+
+  --t-ground: #ffffff; /* the map and page */
+  --t-surface: #ffffff; /* cards, stations, figures */
+  --t-panel: #f3f5f8;
+  --t-ink: #0d1117;
+  --t-ink-2: #4a5261;
+  --t-ink-3: #8a93a0;
+  --t-on-ink: #ffffff; /* text on an ink-filled control */
+  --t-rule: #dde1e7;
+  --t-dot: #e9ecf1; /* the dot grid behind the map */
+  --t-signal: #ffc400; /* ready, you are here */
+  --t-signal-tint: #fff5d1;
+  --t-signal-ink: #8a6400;
+  --t-sign: #0d1117; /* the signage bar stays dark in both themes */
+  --t-sign-2: #1c2230;
+  --t-sign-ink-2: #a3adbb;
+  --t-link: #0065bd;
+  --t-shadow: 13 17 23;
+  --t-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --t-ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --line-0: #e4002b;  --line-0-ink: #ffffff; /* red */
+  --line-1: #0065bd;  --line-1-ink: #ffffff; /* cobalt */
+  --line-2: #00a650;  --line-2-ink: #ffffff; /* green */
+  --line-3: #f26b1d;  --line-3-ink: #ffffff; /* orange */
+  --line-4: #8a3fa0;  --line-4-ink: #ffffff; /* violet */
+  --line-5: #00a3ad;  --line-5-ink: #ffffff; /* teal */
+  --line-6: #e0457b;  --line-6-ink: #ffffff; /* pink */
+  --line-7: #8c6239;  --line-7-ink: #ffffff; /* brown */
+  --line-8: #1f2a6b;  --line-8-ink: #ffffff; /* navy */
+  --line-9: #7ab800;  --line-9-ink: #0d1117; /* lime */
+  --line-10: #6d7b8d; --line-10-ink: #ffffff; /* slate */
+
+  /* Soft tints of the first five lines, for filled shapes in figures. */
+  --line-0-soft: #fbd9df;
+  --line-1-soft: #dcebf8;
+  --line-2-soft: #d6f2e2;
+  --line-3-soft: #fde6d8;
+  --line-4-soft: #eedff3;
+}
+
+/* Night service: the same map after dark. Lines brighten so they hold up on a dark ground;
+   navy becomes periwinkle, which would otherwise disappear. */
+.dark {
+  color-scheme: dark;
+
+  --t-ground: #0d1015;
+  --t-surface: #161b23;
+  --t-panel: #1b212b;
+  --t-ink: #eef1f5;
+  --t-ink-2: #a9b2bf;
+  --t-ink-3: #6c7686;
+  --t-on-ink: #0d1117;
+  --t-rule: #2a313c;
+  --t-dot: #1c222b;
+  --t-signal: #ffc400;
+  --t-signal-tint: #3b2f06;
+  --t-signal-ink: #ffd452;
+  --t-sign: #05070a;
+  --t-sign-2: #151a23;
+  --t-sign-ink-2: #8a95a4;
+  --t-link: #5aa9ff;
+  --t-shadow: 0 0 0;
+
+  --line-0: #ff4458;  --line-0-ink: #ffffff;
+  --line-1: #3f8dff;  --line-1-ink: #ffffff;
+  --line-2: #20c46b;  --line-2-ink: #06140c;
+  --line-3: #ff8a3d;  --line-3-ink: #1a0c02;
+  --line-4: #b673d6;  --line-4-ink: #ffffff;
+  --line-5: #21c8d2;  --line-5-ink: #041416;
+  --line-6: #ff6b9e;  --line-6-ink: #1a0610;
+  --line-7: #c4935f;  --line-7-ink: #140c04;
+  --line-8: #8591ff;  --line-8-ink: #0b0e2a;
+  --line-9: #a2dc3c;  --line-9-ink: #0d1117;
+  --line-10: #9aa8ba; --line-10-ink: #0d1117;
+
+  --line-0-soft: #40121a;
+  --line-1-soft: #132a4a;
+  --line-2-soft: #0f3320;
+  --line-3-soft: #3d2210;
+  --line-4-soft: #2e1a3a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* ---------- Motion ----------
+   Entrances ease out, on-screen moves ease in-out. Under reduced motion, things still fade
+   but nothing travels. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Page and theme changes: a quick crossfade of the whole page. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--t-ease);
+}
