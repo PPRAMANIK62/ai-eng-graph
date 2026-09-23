@@ -38,7 +38,6 @@ export default async function StationPage({ params }: PageProps<"/n/[id]">) {
   );
   const { content } = renderMarkdown(source.body, source.phase, linked, { Link: TransitConceptLink });
   const shared = { graph: slim, lines: map.lines, edgeLines: map.edgeLines, info, id };
-  const draft = node.status !== "published";
 
   return (
     <div className={s.stationPage}>
@@ -50,7 +49,6 @@ export default async function StationPage({ params }: PageProps<"/n/[id]">) {
             <span>{node.depth === "deep" ? "Deep dive" : "Short read"}</span>
             <span>{minutes(node.words)} min</span>
             <span>Updated {node.updated}</span>
-            {draft && <span className={s.draft}>Draft · {node.status}</span>}
           </p>
           <h1 className={s.articleTitle}>{node.title}</h1>
           <p className={s.articleLede}>{node.note}</p>

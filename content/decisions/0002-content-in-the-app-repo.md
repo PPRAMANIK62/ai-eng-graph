@@ -34,9 +34,9 @@ folder entirely. Content in `content/`, figures copied to `public/figures/`
 before each build. Every article page is static HTML, generated with
 `generateStaticParams`. Vercel builds it with no setup.
 
-Production builds show only `published` articles. Drafts get pages
-locally, and on any build with `SHOW_DRAFTS=1` (meant for Vercel preview
-deploys). Unwritten nodes still show on the map, greyed out.
+What's committed is published: every node with an article gets a page,
+whatever its status, so reviewing happens before the commit, not on the
+site. Unwritten (`planned`) nodes still show on the map, greyed out.
 
 ## What I gave up
 

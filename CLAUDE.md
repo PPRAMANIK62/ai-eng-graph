@@ -52,8 +52,8 @@ app/ components/ lib/   the site: a metro map of the concepts at /, articles
                         (station pages) at /n/<id>; design tokens in app/globals.css
 ```
 
-Run the site with `bun dev`. Production builds show only `published`
-articles; set `SHOW_DRAFTS=1` to include drafts.
+Run the site with `bun dev`. What's committed is published: every node with
+an article gets a page, whatever its status. Only `planned` nodes stay off.
 
 ## Workflow at the start of a phase
 

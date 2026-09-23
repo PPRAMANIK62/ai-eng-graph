@@ -15,9 +15,6 @@ const WIKILINK = /\[\[([a-z0-9-]+)(?:\|[^\]]*)?\]\]/g;
 const COMMENT = /<!--[\s\S]*?-->/g;
 const IMAGE = /!\[[^\]]*\]\([^)]*\)/g;
 
-// Drafts get pages locally and on preview deploys; production shows only published.
-const SHOW_DRAFTS = process.env.SHOW_DRAFTS === "1" || process.env.NODE_ENV !== "production";
-const DRAFT_STATUSES: Status[] = ["drafting", "review"];
 
 type RawNode = {
   id: string;
@@ -64,7 +61,9 @@ const loadRaw = cache((): Map<string, RawNode> => {
   return nodes;
 });
 
-const isReadable = (status: Status) => status === "published" || (SHOW_DRAFTS && DRAFT_STATUSES.includes(status));
+// What's committed is published: every node with an article gets a page. Only planned
+// nodes, which have no text yet, stay off the site as "opening later" stations.
+const isReadable = (status: Status) => status !== "planned";
 
 export const getGraph = cache((): Graph => {
   const raw = loadRaw();

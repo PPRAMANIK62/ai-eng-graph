@@ -1069,11 +1069,6 @@ a.stripName:hover {
 .articleMeta > span:first-child {
   color: var(--t-ink);
 }
-.draft {
-  padding: 0 8px;
-  border: 1.5px dashed var(--t-ink-3);
-  border-radius: 999px;
-}
 .articleTitle {
   margin: 14px 0 0;
   font-family: var(--transit-sign);
