@@ -1,0 +1,19 @@
+{
+  "name": "visuals",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.2.0"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0"
+  }
+}
