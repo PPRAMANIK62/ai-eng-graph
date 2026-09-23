@@ -961,13 +961,15 @@
 
 .strip,
 .stripWait {
-  min-height: 96px;
+  min-height: 106px;
 }
 .strip {
   display: flex;
   max-width: 1080px;
-  margin: 22px auto 0;
-  padding: 0;
+  margin: 12px auto 0;
+  /* Room for the "you are here" dot, which sits 8px above the others; overflow stays
+     hidden so the track is cropped at the sides. */
+  padding: 10px 0 0;
   list-style: none;
   overflow: hidden;
 }
