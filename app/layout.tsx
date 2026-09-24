@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/providers";
 import { transitFonts } from "@/components/transit/fonts";
 import s from "@/components/transit/transit.module.css";
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${transitFonts} h-full`} suppressHydrationWarning>
       <body className={s.root}>
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
