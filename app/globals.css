@@ -38,86 +38,91 @@
 :root {
   color-scheme: light;
 
-  --t-ground: #ffffff; /* the map and page */
-  --t-surface: #ffffff; /* cards, stations, figures */
-  --t-panel: #f3f5f8;
-  --t-ink: #0d1117;
-  --t-ink-2: #4a5261;
-  --t-ink-3: #8a93a0;
-  --t-on-ink: #ffffff; /* text on an ink-filled control */
-  --t-rule: #dde1e7;
-  --t-dot: #e9ecf1; /* the dot grid behind the map */
-  --t-signal: #ffc400; /* ready, you are here */
-  --t-signal-tint: #fff5d1;
-  --t-signal-ink: #8a6400;
-  --t-sign: #0d1117; /* the signage bar stays dark in both themes */
-  --t-sign-2: #1c2230;
-  --t-sign-ink-2: #a3adbb;
-  --t-link: #0065bd;
-  --t-shadow: 13 17 23;
+  /* Paper, not screen white: a pure #fff page behind near-black type glares on long reads. */
+  --t-ground: #f7f6f2; /* the map and page */
+  --t-surface: #fcfbf8; /* cards, stations, figures */
+  --t-panel: #efeee9;
+  --t-ink: #1f2329;
+  --t-ink-2: #4d5461;
+  --t-ink-3: #7d8490;
+  --t-on-ink: #fcfbf8; /* text on an ink-filled control */
+  --t-rule: #dfddd6;
+  --t-dot: #e7e5df; /* the dot grid behind the map */
+  --t-signal: #f2b705; /* ready, you are here */
+  --t-signal-tint: #fbf0cc;
+  --t-signal-ink: #7d5c00;
+  --t-sign: #23272e; /* the signage bar stays dark in both themes */
+  --t-sign-2: #30353e;
+  --t-sign-ink: #eceef1;
+  --t-sign-ink-2: #a3aab5;
+  --t-link: #1f66b0;
+  --t-shadow: 31 35 41;
   --t-ease: cubic-bezier(0.23, 1, 0.32, 1);
   --t-ease-io: cubic-bezier(0.65, 0, 0.35, 1);
 
-  --line-0: #e4002b;  --line-0-ink: #ffffff; /* red */
-  --line-1: #0065bd;  --line-1-ink: #ffffff; /* cobalt */
-  --line-2: #00a650;  --line-2-ink: #ffffff; /* green */
-  --line-3: #f26b1d;  --line-3-ink: #ffffff; /* orange */
-  --line-4: #8a3fa0;  --line-4-ink: #ffffff; /* violet */
-  --line-5: #00a3ad;  --line-5-ink: #ffffff; /* teal */
-  --line-6: #e0457b;  --line-6-ink: #ffffff; /* pink */
-  --line-7: #8c6239;  --line-7-ink: #ffffff; /* brown */
-  --line-8: #1f2a6b;  --line-8-ink: #ffffff; /* navy */
-  --line-9: #7ab800;  --line-9-ink: #0d1117; /* lime */
-  --line-10: #6d7b8d; --line-10-ink: #ffffff; /* slate */
+  /* Line colors a notch below full saturation, so crossing lines don't shimmer. */
+  --line-0: #d22f3f;  --line-0-ink: #ffffff; /* red */
+  --line-1: #1f66b0;  --line-1-ink: #ffffff; /* cobalt */
+  --line-2: #1c8f4f;  --line-2-ink: #ffffff; /* green */
+  --line-3: #d9692a;  --line-3-ink: #ffffff; /* orange */
+  --line-4: #80479a;  --line-4-ink: #ffffff; /* violet */
+  --line-5: #138d96;  --line-5-ink: #ffffff; /* teal */
+  --line-6: #cc4f7c;  --line-6-ink: #ffffff; /* pink */
+  --line-7: #86643f;  --line-7-ink: #ffffff; /* brown */
+  --line-8: #2d3a78;  --line-8-ink: #ffffff; /* navy */
+  --line-9: #6d9e1c;  --line-9-ink: #1f2329; /* lime */
+  --line-10: #6a7788; --line-10-ink: #ffffff; /* slate */
 
   /* Soft tints of the first five lines, for filled shapes in figures. */
-  --line-0-soft: #fbd9df;
-  --line-1-soft: #dcebf8;
-  --line-2-soft: #d6f2e2;
-  --line-3-soft: #fde6d8;
-  --line-4-soft: #eedff3;
+  --line-0-soft: #f6dcdf;
+  --line-1-soft: #dde8f4;
+  --line-2-soft: #d9eee1;
+  --line-3-soft: #f8e5d8;
+  --line-4-soft: #ebe0f0;
 }
 
-/* Night service: the same map after dark. Lines brighten so they hold up on a dark ground;
-   navy becomes periwinkle, which would otherwise disappear. */
+/* Night service: the same map after dark. Charcoal ground and off-white type rather than
+   black and white, and lines lifted but muted, not neon: bright saturated strokes on a dark
+   ground glow and blur. Navy becomes periwinkle, which would otherwise disappear. */
 .dark {
   color-scheme: dark;
 
-  --t-ground: #0d1015;
-  --t-surface: #161b23;
-  --t-panel: #1b212b;
-  --t-ink: #eef1f5;
-  --t-ink-2: #a9b2bf;
-  --t-ink-3: #6c7686;
-  --t-on-ink: #0d1117;
-  --t-rule: #2a313c;
-  --t-dot: #1c222b;
-  --t-signal: #ffc400;
-  --t-signal-tint: #3b2f06;
-  --t-signal-ink: #ffd452;
-  --t-sign: #05070a;
-  --t-sign-2: #151a23;
-  --t-sign-ink-2: #8a95a4;
-  --t-link: #5aa9ff;
+  --t-ground: #16191e;
+  --t-surface: #1c2026;
+  --t-panel: #21262d;
+  --t-ink: #d9dee5;
+  --t-ink-2: #a0a8b4;
+  --t-ink-3: #7a8390;
+  --t-on-ink: #16191e;
+  --t-rule: #2e343d;
+  --t-dot: #23282f;
+  --t-signal: #e2b53a;
+  --t-signal-tint: #3a3015;
+  --t-signal-ink: #e8c565;
+  --t-sign: #101317;
+  --t-sign-2: #1c2026;
+  --t-sign-ink: #dde1e7;
+  --t-sign-ink-2: #8f98a5;
+  --t-link: #7aabea;
   --t-shadow: 0 0 0;
 
-  --line-0: #ff4458;  --line-0-ink: #ffffff;
-  --line-1: #3f8dff;  --line-1-ink: #ffffff;
-  --line-2: #20c46b;  --line-2-ink: #06140c;
-  --line-3: #ff8a3d;  --line-3-ink: #1a0c02;
-  --line-4: #b673d6;  --line-4-ink: #ffffff;
-  --line-5: #21c8d2;  --line-5-ink: #041416;
-  --line-6: #ff6b9e;  --line-6-ink: #1a0610;
-  --line-7: #c4935f;  --line-7-ink: #140c04;
-  --line-8: #8591ff;  --line-8-ink: #0b0e2a;
-  --line-9: #a2dc3c;  --line-9-ink: #0d1117;
-  --line-10: #9aa8ba; --line-10-ink: #0d1117;
+  --line-0: #e0636c;  --line-0-ink: #16191e;
+  --line-1: #6d9fe6;  --line-1-ink: #16191e;
+  --line-2: #52b27d;  --line-2-ink: #16191e;
+  --line-3: #de9054;  --line-3-ink: #16191e;
+  --line-4: #b08bcb;  --line-4-ink: #16191e;
+  --line-5: #4fb0b7;  --line-5-ink: #16191e;
+  --line-6: #dd7ea1;  --line-6-ink: #16191e;
+  --line-7: #bb9870;  --line-7-ink: #16191e;
+  --line-8: #8e97e0;  --line-8-ink: #16191e;
+  --line-9: #9fc35c;  --line-9-ink: #16191e;
+  --line-10: #96a2b2; --line-10-ink: #16191e;
 
-  --line-0-soft: #40121a;
-  --line-1-soft: #132a4a;
-  --line-2-soft: #0f3320;
-  --line-3-soft: #3d2210;
-  --line-4-soft: #2e1a3a;
+  --line-0-soft: #3b2226;
+  --line-1-soft: #1f2d42;
+  --line-2-soft: #1c3226;
+  --line-3-soft: #3a2a1d;
+  --line-4-soft: #2e2537;
 }
 
 @layer base {

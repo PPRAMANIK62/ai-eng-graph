@@ -39,7 +39,7 @@
   height: 60px;
   padding: 0 16px;
   background: var(--t-sign);
-  color: #fff;
+  color: var(--t-sign-ink);
 }
 
 .brand {
@@ -72,7 +72,7 @@
   top: 50%;
   height: 6px;
   margin-top: -3px;
-  background: #e4002b;
+  background: var(--line-0);
   border-radius: 1px;
 }
 
@@ -97,7 +97,7 @@
   border-radius: 999px;
   border: 1.5px solid transparent;
   background: var(--t-sign-2);
-  color: #fff;
+  color: var(--t-sign-ink);
   font-family: var(--transit-sign);
   font-weight: 700;
   font-size: 15px;
@@ -905,7 +905,7 @@
 
 .sign {
   background: var(--t-sign);
-  color: #fff;
+  color: var(--t-sign-ink);
   padding: 12px 16px 20px;
 }
 .signTop {
@@ -941,7 +941,7 @@
   color: var(--t-sign-ink-2);
 }
 .signWhere b {
-  color: #fff;
+  color: var(--t-sign-ink);
   font-family: var(--transit-sign);
   font-weight: 800;
 }
@@ -996,10 +996,10 @@
   height: 28px;
   border-radius: 50%;
   background: var(--t-sign);
-  border: 5px solid #fff;
+  border: 5px solid var(--t-sign-ink);
 }
 .stripStop[data-done="true"] .stripDot {
-  background: #fff;
+  background: var(--t-sign-ink);
 }
 .stripStop[data-here="true"] .stripDot {
   width: 36px;
@@ -1015,7 +1015,7 @@
   font-weight: 800;
   font-size: 14.5px;
   line-height: 1.15;
-  color: #fff;
+  color: var(--t-sign-ink);
 }
 a.stripName:hover {
   text-decoration: underline;
@@ -1324,7 +1324,7 @@ a.clink:hover {
   padding: 10px 20px;
   border-radius: 16px;
   background: var(--c);
-  color: #fff;
+  color: var(--t-sign-ink);
   font-family: var(--transit-sign);
   font-weight: 800;
   font-size: 18px;
@@ -1407,14 +1407,14 @@ a.clink:hover {
   color: var(--t-sign-ink-2);
   transition: color 150ms ease, transform 150ms var(--t-ease);
 }
-.themeOption:hover { color: #fff; }
+.themeOption:hover { color: var(--t-sign-ink); }
 .themeOption:active { transform: scale(0.9); }
-.themeOption[aria-checked="true"] { color: #0d1117; }
+.themeOption[aria-checked="true"] { color: var(--t-sign); }
 .themePill {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: #fff;
+  background: var(--t-sign-ink);
 }
 .themeIcon {
   position: relative;
