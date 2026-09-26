@@ -7,8 +7,10 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeSlug from "rehype-slug";
+import rehypeKatex from "rehype-katex";
 import { toJsxRuntime, type Components } from "hast-util-to-jsx-runtime";
 import { visit, SKIP } from "unist-util-visit";
 import type { Root as MdRoot, PhrasingContent, Link } from "mdast";
@@ -83,10 +85,13 @@ export function renderMarkdown(
   const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
+    // Math only between $$ … $$, so prices like "$2 to $10" stay text.
+    .use(remarkMath, { singleDollarTextMath: false })
     .use(remarkWikilinks)
     .use(remarkSiteShape)
     .use(remarkRehype)
     .use(rehypeSlug)
+    .use(rehypeKatex)
     .use(rehypeFigures);
   const hast = processor.runSync(processor.parse(body)) as HastRoot;
 

@@ -1161,6 +1161,16 @@ a.stripName:hover {
   border-left: 4px solid var(--t-ink);
   color: var(--t-ink-2);
 }
+/* Equations (KaTeX). Long ones scroll sideways on a phone instead of widening the page. */
+.prose :global(.katex) {
+  font-size: 1.1em;
+}
+.prose :global(.katex-display) {
+  margin: 0 0 1.2em;
+  padding: 4px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 .prose table {
   display: block;
   width: 100%;

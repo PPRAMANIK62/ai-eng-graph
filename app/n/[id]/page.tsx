@@ -7,6 +7,7 @@ import { computeTransit } from "@/components/transit/model";
 import { minutes } from "@/components/transit/route";
 import { StationEnd, StationStrip, TransitConceptLink, type StationInfo } from "@/components/transit/station-client";
 import s from "@/components/transit/transit.module.css";
+import "katex/dist/katex.min.css";
 
 export const dynamicParams = false;
 
