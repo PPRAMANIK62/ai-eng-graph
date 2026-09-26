@@ -66,6 +66,11 @@ about 1.4%.
 
 ![Two headlines classified by gpt-4o-mini. For the tennis headline, Art gets 97.2% (logprob −0.028) and Sports 1.4% (logprob −4.28). For a clear tech headline, Technology gets 100% (logprob 0.0). A logprob near 0 means the model was sure; a big negative number means it wasn't.](img/logprobs-headlines.svg)
 
+You can see the same numbers for any text on a small open model. The
+logprob column is the log of the chance next to it.
+
+{{widget:next-token}}
+
 ## What people use them for
 
 - **Confidence thresholds.** Accept a classification automatically when

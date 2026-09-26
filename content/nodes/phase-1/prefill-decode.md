@@ -67,6 +67,11 @@ Prefill is a small slice of that. The answer length drives the rest.
 Flip TPOT around and you get the speed a user sees: a TPOT of 100 ms is 10
 tokens per second.
 
+You can measure both on your own machine. This sends a question to a small
+model running in your browser and times every token that comes back.
+
+{{widget:request-timer}}
+
 This split is why answers are usually sent to you as they're produced,
 covered in [[streaming]]. You can't make decode faster by waiting, but you
 can show the first tokens as soon as prefill is done.

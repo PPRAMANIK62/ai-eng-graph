@@ -51,6 +51,11 @@ together, so the underdog gets a real chance.
 For creative work, 0.7 is a common starting point. Treat it as a first
 guess to test, not a rule.
 
+Move the temperature slider below and watch the same list of logits turn
+into sharper or flatter chances.
+
+{{widget:next-token}}
+
 ## Temperature 0 is a special case
 
 You can't divide by zero. So when you set temperature to 0, the software

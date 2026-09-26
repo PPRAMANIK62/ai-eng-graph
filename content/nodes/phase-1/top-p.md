@@ -71,6 +71,12 @@ one token to about a thousand.
 
 ![Two bar charts of next-token probabilities. On the left the probability is spread flat over many tokens; on the right most of it sits on one or two. A top-k cut at k = 6 is the same line in both: on the left it throws away good options, on the right it lets in tokens with almost no chance. A top-p cut at p = 0.92 keeps 9 tokens on the left and only 3 on the right.](img/top-p-k-vs-p.svg)
 
+Try it on a real model. Lower top-p and see how many tokens survive the
+cut, then pick a few tokens and watch that number change with the model's
+confidence.
+
+{{widget:next-token}}
+
 ## Where it came from, and how well it works
 
 Top-p was introduced in 2019 by Ari Holtzman and colleagues. On GPT-2
