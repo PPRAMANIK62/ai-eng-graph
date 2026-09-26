@@ -126,11 +126,11 @@ Build:
 - A static site that shows the graph, hover notes, "you haven't read this
   yet" warnings, and trails. A map that fills in as the reader marks nodes
   as understood.
-- Widgets that call a real model: a tokenizer playground, and a temperature
-  slider driven by real logprobs from the API. As of 2026-09, Claude rejects
-  custom `temperature` on current models and newer OpenAI reasoning models
-  drop logprobs, so the slider needs a model that still returns them (an
-  OpenAI model with reasoning off, or an open model). Decision record.
+- Three widgets on a real open model, run in the reader's browser (no API,
+  no keys, no cost): a tokenizer playground comparing open tokenizers, a
+  next-token explorer (real logits, with temperature, top-p and sampling
+  applied on top), and a request timer that measures time to first token
+  and time per token. Decision record 0006.
 - A written success criteria doc for the AI features coming in later
   phases: what "good" means for each, before building any of them.
 - Stack decision records: language (TypeScript with the Vercel AI SDK, or

@@ -1,0 +1,452 @@
+/* Widgets sit inside article prose, framed like figures and read the same tokens (app/globals.css).
+   Rules start with .widget so they win over the .prose element styles around them. */
+
+.widget {
+  margin: 2em 0;
+  padding: 16px;
+  border: 1px solid var(--t-rule);
+  border-radius: 14px;
+  background: var(--t-surface);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.widget p {
+  margin: 0;
+}
+
+.widget .head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-family: var(--transit-sign);
+}
+.widget .kicker {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--t-signal);
+  color: var(--t-sign);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.widget .title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.widget .stack {
+  display: grid;
+  gap: 12px;
+}
+.widget .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.widget .row > .input {
+  flex: 1 1 220px;
+}
+
+/* ---------- controls ---------- */
+
+.widget .input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--t-rule);
+  border-radius: 8px;
+  background: var(--t-ground);
+  color: var(--t-ink);
+  font: inherit;
+  resize: vertical;
+  transition: border-color 0.15s var(--t-ease);
+}
+.widget .input:focus {
+  outline: none;
+  border-color: var(--t-link);
+}
+.widget select {
+  margin: 0 6px;
+  padding: 4px 6px;
+  border: 1.5px solid var(--t-rule);
+  border-radius: 6px;
+  background: var(--t-ground);
+  color: var(--t-ink);
+  font: inherit;
+}
+
+.widget .primary,
+.widget .secondary {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-family: var(--transit-sign);
+  font-weight: 800;
+  font-size: 14px;
+  transition: background 0.15s var(--t-ease), opacity 0.15s var(--t-ease), transform 0.1s var(--t-ease);
+}
+.widget .primary {
+  border: 0;
+  background: var(--t-ink);
+  color: var(--t-on-ink);
+}
+.widget .secondary {
+  border: 1.5px solid var(--t-rule);
+  background: transparent;
+}
+.widget .secondary:hover:not(:disabled) {
+  background: var(--t-panel);
+}
+.widget .primary:active:not(:disabled),
+.widget .secondary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.widget button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.widget .chip,
+.widget .tab {
+  padding: 4px 11px;
+  border: 1.5px solid var(--t-rule);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.widget .chip[aria-pressed="true"],
+.widget .tab[aria-pressed="true"] {
+  border-color: var(--t-ink);
+  background: var(--t-ink);
+  color: var(--t-on-ink);
+}
+.widget .tab small {
+  margin-left: 6px;
+  color: var(--t-ink-3);
+  font-weight: 500;
+}
+.widget .tab[aria-pressed="true"] small {
+  color: inherit;
+  opacity: 0.7;
+}
+.widget .link {
+  border: 0;
+  background: none;
+  color: var(--t-link);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.widget .samples,
+.widget .tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.widget .samples {
+  margin-bottom: 8px;
+}
+.widget .tabs {
+  margin: 12px 0;
+}
+
+.widget .toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--t-ink-2);
+  font-size: 13.5px;
+}
+.widget .stats .toggle {
+  margin-left: auto;
+}
+
+/* ---------- text and messages ---------- */
+
+.widget .hint,
+.widget .fine {
+  color: var(--t-ink-2);
+  font-size: 13.5px;
+}
+.widget .fine {
+  margin-top: 10px;
+  color: var(--t-ink-3);
+}
+.widget .error {
+  color: var(--line-0);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.widget .gate {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  color: var(--t-ink-2);
+}
+.widget .progress {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  font-size: 13.5px;
+}
+.widget .bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--t-panel);
+  overflow: hidden;
+}
+.widget .bar span {
+  display: block;
+  height: 100%;
+  background: var(--t-signal);
+  transition: width 0.2s linear;
+}
+
+.widget .sofar {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--t-panel);
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.widget .sofar mark {
+  background: var(--t-signal-tint);
+  color: inherit;
+  box-shadow: inset 0 -2px 0 var(--t-signal);
+}
+.widget .caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--t-ink);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .widget .caret {
+    animation: none;
+  }
+}
+
+/* ---------- tokens ---------- */
+
+.widget .stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-bottom: 8px;
+  color: var(--t-ink-2);
+}
+.widget .stats b {
+  color: var(--t-ink);
+  font-family: var(--transit-sign);
+  font-size: 17px;
+}
+.widget .tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--t-ground);
+}
+.widget .token {
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: var(--t-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13.5px;
+  white-space: pre;
+}
+.widget .token[data-tone="0"] { background: var(--line-1-soft); }
+.widget .token[data-tone="1"] { background: var(--line-3-soft); }
+.widget .token[data-tone="2"] { background: var(--line-2-soft); }
+.widget .token[data-tone="3"] { background: var(--line-4-soft); }
+.widget .token[data-tone="4"] { background: var(--line-0-soft); }
+
+/* ---------- tables ---------- */
+
+.widget .compare,
+.widget .candidates {
+  display: table;
+  width: 100%;
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+.widget .compare caption {
+  padding-bottom: 6px;
+  color: var(--t-ink-2);
+  font-family: var(--transit-sign);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.widget .compare th,
+.widget .compare td,
+.widget .candidates th,
+.widget .candidates td {
+  padding: 6px 10px 6px 0;
+  vertical-align: middle;
+}
+.widget .compare th {
+  width: 90px;
+  border-bottom: 1px solid var(--t-rule);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.widget .compare td:last-child {
+  width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.widget .compare tr[aria-current="true"] th {
+  color: var(--t-link);
+}
+.widget .countBar {
+  display: block;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--line-1);
+}
+
+.widget .candidates th {
+  font-size: 12.5px;
+}
+.widget .candidates tr[data-cut] td {
+  color: var(--t-ink-3);
+}
+.widget .candidates tr[data-cut] .token {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+.widget .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.widget .chance {
+  width: 45%;
+}
+.widget .chance > span:last-child {
+  display: inline-block;
+  min-width: 44px;
+  margin-left: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.widget .chanceBar {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 56px);
+  height: 10px;
+  vertical-align: middle;
+  border-radius: 3px;
+  background: var(--t-panel);
+}
+.widget .chanceBar > span:first-child {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: var(--line-1);
+  transition: width 0.15s var(--t-ease);
+}
+.widget .ghost {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--t-ink-2);
+}
+
+.widget .controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 20px;
+}
+.widget .controls label {
+  display: grid;
+  gap: 4px;
+  color: var(--t-ink-2);
+  font-size: 13.5px;
+}
+.widget .controls b {
+  color: var(--t-ink);
+}
+.widget input[type="range"] {
+  width: 100%;
+  accent-color: var(--t-ink);
+}
+
+/* ---------- request timer ---------- */
+
+.widget .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.widget .metrics div {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--t-panel);
+}
+.widget .metrics dt {
+  color: var(--t-ink-2);
+  font-size: 12.5px;
+}
+.widget .metrics dd {
+  margin: 2px 0 0;
+  font-family: var(--transit-sign);
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.widget .timelines {
+  display: grid;
+  gap: 8px;
+}
+.widget .timeline {
+  display: grid;
+  gap: 3px;
+}
+.widget .timelineLabel {
+  color: var(--t-ink-2);
+  font-size: 12.5px;
+}
+.widget .track {
+  position: relative;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--t-panel);
+}
+.widget .prefill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px 0 0 3px;
+  background: var(--line-3);
+}
+.widget .tick {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  width: 1.5px;
+  background: var(--line-1);
+}
