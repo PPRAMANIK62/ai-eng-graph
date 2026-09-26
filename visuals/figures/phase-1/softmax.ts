@@ -5,7 +5,7 @@ import { arrow, svg, text, type Figure } from "../../lib/svg.ts";
 const TOKENS = ["learn", "predict", "make"];
 const PANELS = [
   { head: "1. Raw scores (logits)", values: [3, 2, 1], labels: ["3", "2", "1"], note: "gap: 3 vs 1" },
-  { head: "2. After e^x", values: [20.09, 7.39, 2.72], labels: ["20.09", "7.39", "2.72"], note: "gap: 20.09 vs 2.72" },
+  { head: "2. e to the power of each", values: [20.09, 7.39, 2.72], labels: ["20.09", "7.39", "2.72"], note: "gap: 20.09 vs 2.72" },
   { head: "3. ÷ total (30.19)", values: [0.665, 0.245, 0.09], labels: ["0.665", "0.245", "0.090"], note: "sums to 1" },
 ];
 

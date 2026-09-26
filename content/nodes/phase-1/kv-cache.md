@@ -98,7 +98,12 @@ with longer sequences, since there's more past work to skip.
 The cache has to sit in GPU memory, next to the model's weights, for as long
 as the request runs. Its size is:
 
-> batch size × sequence length × 2 (keys and values) × layers × hidden size × bytes per number
+$$
+\begin{aligned}
+&\text{batch size} \times \text{sequence length} \times \underbrace{2}_{\text{keys and values}} \\
+&\times \text{layers} \times \text{hidden size} \times \text{bytes per number}
+\end{aligned}
+$$
 
 Everything in that formula is fixed by the model except two: how many
 requests are running (batch size) and how long each one is (sequence

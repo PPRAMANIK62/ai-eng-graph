@@ -57,7 +57,9 @@ Because the stages are so different, speed is measured with two numbers:
 
 Total response time is roughly:
 
-> total time = TTFT + TPOT × number of output tokens
+$$
+\text{total time} = \text{TTFT} + \text{TPOT} \times \text{output tokens}
+$$
 
 With made-up but realistic numbers for our request, say a TTFT of half a
 second and a TPOT of 20 ms, that's 0.5 s + 499 × 0.02 s, about 10.5 seconds.

@@ -39,14 +39,16 @@ Softmax does it in two moves.
    stay bigger.
 2. **Divide each result by their sum.** Now they add up to 1.
 
-As a formula, for scores o₁, o₂, …:
+As a formula, for scores $$o_1, o_2, \ldots, o_n$$:
 
-> softmax(o)ᵢ = e^oᵢ / (e^o₁ + e^o₂ + …)
+$$
+\text{softmax}(o)_i = \frac{e^{o_i}}{e^{o_1} + e^{o_2} + \cdots + e^{o_n}}
+$$
 
 Here's a worked example with three tokens. The numbers are made up, the
 arithmetic is real:
 
-| Token | Logit | e^logit | ÷ total (30.19) |
+| Token | Logit | $$e^{\text{logit}}$$ | ÷ total (30.19) |
 |---|---|---|---|
 | learn | 3 | 20.09 | 0.665 |
 | predict | 2 | 7.39 | 0.245 |

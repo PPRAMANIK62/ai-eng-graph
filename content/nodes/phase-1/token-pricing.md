@@ -47,7 +47,9 @@ Output is less than a quarter of the tokens but most of the token cost.
 
 So when you estimate cost, don't just count tokens. Weight them:
 
-> cost ≈ input tokens × input price + output tokens × 5 × input price
+$$
+\text{cost} \approx \text{input tokens} \times \text{input price} + \text{output tokens} \times 5 \times \text{input price}
+$$
 
 ## Why output might cost more
 
