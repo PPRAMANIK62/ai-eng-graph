@@ -8,7 +8,6 @@ note: >-
 needs: [next-token-prediction, pretraining, post-training]
 leads_to: []
 compare_with: [grounding]
-status: review
 updated: 2026-09-23
 ---
 

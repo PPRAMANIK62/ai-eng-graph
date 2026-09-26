@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 import matter from "gray-matter";
-import type { Depth, Edge, Graph, NodeSummary, Status } from "./graph";
+import type { Depth, Edge, Graph, NodeSummary } from "./graph";
 
 // Reads content/ at build time. scripts/check.ts is what validates it;
 // this only trusts the shape check.ts enforces.
@@ -14,7 +14,7 @@ const NODES_DIR = path.join(process.cwd(), "content", "nodes");
 const WIKILINK = /\[\[([a-z0-9-]+)(?:\|[^\]]*)?\]\]/g;
 const COMMENT = /<!--[\s\S]*?-->/g;
 const IMAGE = /!\[[^\]]*\]\([^)]*\)/g;
-
+const HEADING = /^#.*$/gm;
 
 type RawNode = {
   id: string;
@@ -22,7 +22,7 @@ type RawNode = {
   note: string;
   depth: Depth;
   phase: number;
-  status: Status;
+  written: boolean;
   updated: string;
   needs: string[];
   leadsTo: string[];
@@ -47,7 +47,7 @@ const loadRaw = cache((): Map<string, RawNode> => {
         note: data.note,
         depth: data.depth,
         phase: Number(data.phase),
-        status: data.status,
+        written: /\S/.test(text.replace(HEADING, "")),
         updated,
         needs: data.needs ?? [],
         leadsTo: data.leads_to ?? [],
@@ -60,10 +60,6 @@ const loadRaw = cache((): Map<string, RawNode> => {
   }
   return nodes;
 });
-
-// What's committed is published: every node with an article gets a page. Only planned
-// nodes, which have no text yet, stay off the site as "opening later" stations.
-const isReadable = (status: Status) => status !== "planned";
 
 export const getGraph = cache((): Graph => {
   const raw = loadRaw();
@@ -106,11 +102,12 @@ export const getGraph = cache((): Graph => {
       note: n.note,
       depth: n.depth,
       phase: n.phase,
-      status: n.status,
       updated: n.updated,
       words: n.words,
       level: levelOf(n.id),
-      readable: isReadable(n.status),
+      // What's committed is published: every written node gets a page. Planned nodes (headings
+      // and template comments only) stay off the site as "opening later" stations.
+      readable: n.written,
       compareWith: n.compareWith.filter(has),
     }));
 

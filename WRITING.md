@@ -166,19 +166,21 @@ Links are designed, not added by accident. At the start of each phase in
 The map will change as I learn. That's fine, update the planned nodes when
 it does.
 
-## Status
+## Planned and written
 
-Every article has a `status`:
+There's no status field. A node is one of two things:
 
-- `planned`: the file exists, concept, note and links set.
-- `reading`: collecting sources and taking notes.
-- `drafting`: writing.
-- `review`: citation check and edit pass.
-- `published`: done and on the site.
+- **Planned**: the file exists with its concept, note and links, and the body
+  is only headings and template comments. It shows on the map as "opening
+  later" and has no page.
+- **Written**: the body has text. Whatever is committed is published, so a
+  written node has a page as soon as it's committed.
+
+Drafts stay uncommitted until I've reviewed them.
 
 ## Keeping articles current
 
-AI changes fast. A published node gets re-checked every 6 months: are the
+AI changes fast. A written node gets re-checked every 6 months: are the
 sources still current, has anything newer replaced them, is the article
 still right? Update `updated` after each check. The check script warns
-when a published node hasn't been touched in 6 months.
+when a written node hasn't been touched in 6 months.

@@ -8,7 +8,6 @@ note: >-
 needs: []                    # node ids to read first
 leads_to: []                 # node ids this opens up
 compare_with: []             # node ids it's often confused with or weighed against
-status: planned              # planned | reading | drafting | review | published
 updated: YYYY-MM-DD
 ---
 

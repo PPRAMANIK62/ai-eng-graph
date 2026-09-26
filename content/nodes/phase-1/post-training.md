@@ -8,7 +8,6 @@ note: >-
 needs: [pretraining]
 leads_to: [rlhf, reasoning-models, hallucination]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

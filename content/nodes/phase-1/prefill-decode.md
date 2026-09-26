@@ -8,7 +8,6 @@ note: >-
 needs: [transformer, next-token-prediction]
 leads_to: [kv-cache, token-pricing, streaming]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

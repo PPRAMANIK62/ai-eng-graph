@@ -8,7 +8,6 @@ note: >-
 needs: [sampling]
 leads_to: []
 compare_with: [temperature]
-status: review
 updated: 2026-09-23
 ---
 

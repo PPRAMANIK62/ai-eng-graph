@@ -8,7 +8,6 @@ note: >-
 needs: [embeddings]
 leads_to: [transformer, kv-cache, context-window]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

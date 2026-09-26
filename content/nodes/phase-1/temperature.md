@@ -8,7 +8,6 @@ note: >-
 needs: [sampling]
 leads_to: []
 compare_with: [top-p]
-status: review
 updated: 2026-09-23
 ---
 

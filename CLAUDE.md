@@ -17,7 +17,7 @@ and the phases, and `WRITING.md` for how articles are written and linked.
 - One concept per node. Not a whole topic, not half a concept. Each node is
   `deep` or `short`. Sizing rules are in `WRITING.md`.
 - You write the articles, built only from source notes in `content/sources/`. I
-  review them and decide when they're published.
+  review them. Committing publishes, so don't commit an article until I say so.
 - Never write a case study. It's mine, written after I've built the
   phase. You gather the facts and numbers for it.
 - Never claim an experiment, measurement or build that didn't happen.
@@ -52,8 +52,9 @@ app/ components/ lib/   the site: a metro map of the concepts at /, articles
                         (station pages) at /n/<id>; design tokens in app/globals.css
 ```
 
-Run the site with `bun dev`. What's committed is published: every node with
-an article gets a page, whatever its status. Only `planned` nodes stay off.
+Run the site with `bun dev`, live at aieng.purbayan.me. What's committed is
+published: every node with text gets a page. A planned node (headings and
+template comments only) stays off. There's no status field.
 
 ## Workflow at the start of a phase
 
@@ -78,21 +79,21 @@ Before any article in a phase is written, plan its part of the map:
 3. **Sources.** Start from the node's list in `content/sources/_candidates.md`:
    3 to 6 for `deep`, 1 or 2 for `short`, primary ones first. Re-open each
    one; if it's dead, changed, or replaced by something newer, search for a
-   replacement. Status: `reading`.
+   replacement.
 4. **Source notes.** For each source used, copy `content/templates/source.md` to
    `content/sources/<id>.md` (skip if it exists; one source serves many nodes).
    Summary in plain words, key claims each with a short quote copied
    word for word and its location, visuals worth redrawing, open questions.
    Mark `primary` honestly.
-5. **Write.** Status: `drafting`. Write the whole article as an
-   explanation in our own words, following "The shape of every article" in
-   `WRITING.md`: no quotes or "X says" in the body, sources listed once in
-   Further reading as real links. Every concept that has a node is linked as `[[id]]` on
-   first mention. Plan the main visual as a `VISUAL:` comment: what it
-   shows and why. If it starts explaining a second concept at length, stop
-   and propose a new node for it.
-6. **Review.** Status: `review`. Run `bun run check` and fix
-   every error and warning. Then check by hand:
+5. **Write.** Write the whole article as an explanation in our own words,
+   following "The shape of every article" in `WRITING.md`: no quotes or
+   "X says" in the body, sources listed once in Further reading as real
+   links. Every concept that has a node is linked as `[[id]]` on first
+   mention. Plan the main visual as a `VISUAL:` comment: what it shows and
+   why. If it starts explaining a second concept at length, stop and
+   propose a new node for it.
+6. **Review.** Run `bun run check` and fix every error and warning. Then
+   check by hand:
    - every fact is in the note of a source in Further reading; anything
      that isn't gets verified on the page or removed
    - it reads as an explanation, not a digest of what sources said
@@ -103,8 +104,7 @@ Before any article in a phase is written, plan its part of the map:
    - style rules from `WRITING.md`
    Draw each `VISUAL:` as a figure in `visuals/` and swap the comment for
    the image. Tell me what you changed and what you're unsure about.
-7. **Publish.** Only when I say so. Status: `published`, update the
-   `updated` date.
+7. **Publish.** Only when I say so: update the `updated` date and commit.
 
 ## Workflow for build work
 
@@ -123,7 +123,7 @@ Don't start a phase before the one before it is done unless I say so.
 - **Log real usage.** Once the chat exists, every question and answer gets
   logged, and failures get turned into new eval cases.
 - **Articles follow the build.** When a build step uses a concept that has
-  no published node, flag it. The concepts a phase uses get written in that
+  no written node, flag it. The concepts a phase uses get written in that
   phase.
 - **Don't publish secrets.** API keys go in environment variables, never in
   this folder's files.
@@ -133,7 +133,7 @@ Don't start a phase before the one before it is done unless I say so.
 1. Check every "done when" line in `PLAN.md` for the phase. Show me the
    evidence for each, or say what's missing.
 2. Run `bun run check`. Every node the phase planned is
-   published, or I've agreed to move it.
+   written and committed, or I've agreed to move it.
 3. Gather the numbers, decision records and "what broke" notes into a
    draft outline in `content/case-studies/phase-N.md` from
    `content/templates/case-study.md`. I write the case study itself.
@@ -143,7 +143,7 @@ Don't start a phase before the one before it is done unless I say so.
 ## Other work
 - **Run `bun run check`** after any change to `content/nodes/` or
   `content/sources/`.
-- **Re-check stale nodes.** When the script says a published node is 6
+- **Re-check stale nodes.** When the script says a written node is 6
   months old, check its sources are still current and the article is still
   right, then update `updated`. Tell me what changed.
 - **Keep this file short.** Update it only for lasting rules, not task

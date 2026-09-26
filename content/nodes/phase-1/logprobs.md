@@ -8,7 +8,6 @@ note: >-
 needs: [softmax, next-token-prediction]
 leads_to: []
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

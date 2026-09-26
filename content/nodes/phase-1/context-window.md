@@ -8,7 +8,6 @@ note: >-
 needs: [tokenization, attention]
 leads_to: [chat-api]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

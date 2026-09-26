@@ -1,7 +1,6 @@
 // The graph as the site sees it. Pure data and helpers, safe on server and client.
 
 export type Depth = "deep" | "short";
-export type Status = "planned" | "reading" | "drafting" | "review" | "published";
 export type EdgeKind = "needs" | "compare" | "mention";
 
 export type NodeSummary = {
@@ -10,11 +9,10 @@ export type NodeSummary = {
   note: string;
   depth: Depth;
   phase: number;
-  status: Status;
   updated: string;
   words: number;
   level: number; // longest chain of prerequisites above this node
-  readable: boolean; // has a page on this build
+  readable: boolean; // written, so it has a page; a planned node has only headings
   compareWith: string[];
 };
 

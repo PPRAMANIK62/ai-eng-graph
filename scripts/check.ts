@@ -8,17 +8,19 @@
  *     (inline links are also checked in decisions/ and case-studies/)
  *   - leads_to / needs aren't mirrored, compare_with isn't mirrored
  *   - a link under Further reading matches no source note's url
- *   - a node in review or published lists no sources under Further reading
+ *   - a node still has a status field (a node is planned until its body has text,
+ *     and whatever is committed is published)
+ *   - a written node lists no sources under Further reading
  *   - an image link ![..](img/..) points to a file that doesn't exist
  * Warnings:
  *   - a [@citation] marker in the body instead of under Further reading
  *   - a source no node cites
  *   - an orphan: a node that links nowhere, or that nothing links to
- *   - a node past planned doesn't link something it needs in the text
+ *   - a written node doesn't link something it needs in the text
  *   - a node is past its depth's word limit (may be two concepts)
- *   - a deep node in review or published cites fewer than 3 sources
- *   - a published node hasn't been updated in 6 months
- *   - a node past drafting still has a VISUAL: comment that was never drawn
+ *   - a written deep node cites fewer than 3 sources
+ *   - a written node hasn't been updated in 6 months
+ *   - a written node still has a VISUAL: comment that was never drawn
  *   - an image in nodes/phase-N/img/ that no node uses
  *
  * Usage:
@@ -36,7 +38,6 @@ const SOURCES = join(CONTENT, "sources");
 const LINKING_DIRS = ["decisions", "case-studies"]; // [[links]] here must resolve too
 
 const DEPTHS: Record<string, number> = { deep: 2500, short: 1000 }; // depth -> word limit
-const STATUSES = ["planned", "reading", "drafting", "review", "published"];
 const KINDS = ["blog", "book", "code", "docs", "paper", "spec", "talk"];
 const LINK_FIELDS = ["needs", "leads_to", "compare_with"] as const;
 const STALE_DAYS = 182;
@@ -48,12 +49,14 @@ const WIKILINK = /\[\[([a-z0-9-]+)(?:\|[^\]]*)?\]\]/g;
 const COMMENT = /<!--[\s\S]*?-->/g;
 const IMAGE = /!\[[^\]]*\]\(([^)\s]+)\)/g;
 const VISUAL = /<!--\s*VISUAL:/g;
+const HEADING = /^#.*$/gm;
 
 type Value = string | string[];
 type Meta = Record<string, Value>;
 
 type Node = {
   meta: Meta;
+  written: boolean; // has text beyond headings; a planned node doesn't
   needs: string[];
   leads_to: string[];
   compare_with: string[];
@@ -153,7 +156,7 @@ function loadNodes(errors: string[]): Map<string, Node> {
       errors.push(`${where}: phase ${shown(meta.phase)} but file is in ${parent}/, move it to content/nodes/phase-${shown(meta.phase)}/`);
     if (nodes.has(stem)) errors.push(`${where}: id '${stem}' also used by ${nodes.get(stem)!.where}`);
     if (!(str(meta.depth) in DEPTHS)) errors.push(`${where}: depth must be one of ${pyList(Object.keys(DEPTHS).sort())}`);
-    if (!STATUSES.includes(str(meta.status))) errors.push(`${where}: status must be one of ${pyList(STATUSES)}`);
+    if (meta.status !== undefined) errors.push(`${where}: remove status; a node is planned until its body has text, and committed means published`);
     const links: Record<(typeof LINK_FIELDS)[number], string[]> = { needs: [], leads_to: [], compare_with: [] };
     for (const field of LINK_FIELDS) {
       const v = meta[field];
@@ -166,6 +169,7 @@ function loadNodes(errors: string[]): Map<string, Node> {
     const reading = cut === -1 ? "" : text.slice(cut + "## Further reading".length);
     nodes.set(stem, {
       meta,
+      written: /\S/.test(text.replace(HEADING, "")),
       ...links,
       readingUrls: all(LINK, reading),
       bodyCites: new Set(all(CITATION, bodyText)),
@@ -182,7 +186,6 @@ function loadNodes(errors: string[]): Map<string, Node> {
 
 function checkNode(nid: string, n: Node, nodes: Map<string, Node>, sources: Map<string, Meta>, errors: string[], warnings: string[]) {
   const { where } = n;
-  const status = str(n.meta.status);
 
   for (const field of LINK_FIELDS)
     for (const target of n[field]) if (!nodes.has(target)) errors.push(`${where}: ${field} -> '${target}' has no node file`);
@@ -206,25 +209,25 @@ function checkNode(nid: string, n: Node, nodes: Map<string, Node>, sources: Map<
   }
   if (n.bodyCites.size)
     warnings.push(`${where}: citation markers in the body (${[...n.bodyCites].sort().join(", ")}); list sources only under Further reading`);
-  if (status === "review" || status === "published") {
-    if (!n.cites.size) errors.push(`${where}: status ${status} but no sources under Further reading`);
+  if (n.written) {
+    if (!n.cites.size) errors.push(`${where}: written but no sources under Further reading`);
     else if (n.meta.depth === "deep" && n.cites.size < DEEP_MIN_SOURCES)
       warnings.push(`${where}: deep node cites ${n.cites.size} sources, expected ${DEEP_MIN_SOURCES}+`);
   }
 
-  if (status !== "planned")
+  if (n.written)
     for (const target of n.needs)
       if (!n.links.has(target)) warnings.push(`${where}: needs '${target}' but never links [[${target}]] in the text`);
   for (const img of n.images)
     if (!existsSync(img) || !statSync(img).isFile())
       errors.push(`${where}: image ${relative(ROOT, img)} doesn't exist (build it with visuals/build.ts)`);
-  if ((status === "review" || status === "published") && n.visualsTodo)
+  if (n.written && n.visualsTodo)
     warnings.push(`${where}: ${n.visualsTodo} VISUAL: comment(s) not drawn yet`);
 
   const limit = DEPTHS[str(n.meta.depth)];
   if (limit && n.words > limit) warnings.push(`${where}: ${n.words} words, over ${limit} for ${n.meta.depth}, may be two concepts`);
 
-  if (status === "published") {
+  if (n.written) {
     const updated = str(n.meta.updated);
     const day = /^\d{4}-\d{2}-\d{2}$/.test(updated) ? new Date(`${updated}T00:00:00`) : null;
     if (!day || isNaN(day.getTime())) errors.push(`${where}: updated must be a date like 2026-09-23`);
@@ -232,7 +235,7 @@ function checkNode(nid: string, n: Node, nodes: Map<string, Node>, sources: Map<
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const age = Math.round((today.getTime() - day.getTime()) / 86_400_000);
-      if (age > STALE_DAYS) warnings.push(`${where}: published and not updated in ${age} days, re-check it`);
+      if (age > STALE_DAYS) warnings.push(`${where}: not updated in ${age} days, re-check it`);
     }
   }
 }
@@ -253,7 +256,7 @@ function printMap(nodes: Map<string, Node>) {
     const ids = byPhase.get(phase)!.sort((a, b) => nodes.get(a)!.needs.length - nodes.get(b)!.needs.length || (a < b ? -1 : a > b ? 1 : 0));
     for (const nid of ids) {
       const n = nodes.get(nid)!;
-      console.log(`  ${nid}  [${str(n.meta.depth) || "?"}, ${str(n.meta.status) || "?"}]`);
+      console.log(`  ${nid}  [${str(n.meta.depth) || "?"}, ${n.written ? "written" : "planned"}]`);
       console.log(`      ${str(n.meta.note)}`);
       for (const field of LINK_FIELDS) if (n[field].length) console.log(`      ${field}: ${n[field].join(", ")}`);
     }

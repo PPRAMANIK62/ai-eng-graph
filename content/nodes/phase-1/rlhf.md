@@ -8,7 +8,6 @@ note: >-
 needs: [post-training]
 leads_to: []
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

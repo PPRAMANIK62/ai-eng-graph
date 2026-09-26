@@ -8,7 +8,6 @@ note: >-
 needs: [next-token-prediction]
 leads_to: [bpe, embeddings, context-window]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

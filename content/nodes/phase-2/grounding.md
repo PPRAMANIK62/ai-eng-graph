@@ -8,7 +8,6 @@ note: >-
 needs: []
 leads_to: []
 compare_with: [hallucination]
-status: planned
 updated: 2026-09-23
 ---
 

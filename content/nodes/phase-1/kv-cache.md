@@ -8,7 +8,6 @@ note: >-
 needs: [attention, prefill-decode]
 leads_to: []
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

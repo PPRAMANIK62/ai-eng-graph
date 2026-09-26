@@ -8,7 +8,6 @@ note: >-
 needs: [context-window]
 leads_to: [system-prompt, few-shot-prompting, structured-output, streaming]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

@@ -8,7 +8,6 @@ note: >-
 needs: [next-token-prediction]
 leads_to: [reasoning-models]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

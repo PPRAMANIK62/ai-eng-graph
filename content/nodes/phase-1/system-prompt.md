@@ -8,7 +8,6 @@ note: >-
 needs: [chat-api]
 leads_to: [role-prompting, xml-tags, prompts-as-code]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 

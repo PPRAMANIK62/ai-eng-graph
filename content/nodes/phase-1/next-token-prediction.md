@@ -8,7 +8,6 @@ note: >-
 needs: []
 leads_to: [llm-use-cases, hallucination, tokenization, logprobs, sampling, pretraining, chain-of-thought, prefill-decode]
 compare_with: []
-status: review
 updated: 2026-09-23
 ---
 
