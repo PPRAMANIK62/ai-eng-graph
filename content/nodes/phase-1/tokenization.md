@@ -102,11 +102,6 @@ The two big providers also differ in how you count:
 Anthropic also switched to a new tokenizer with Claude Opus 4.7, so even
 within one family, counts change between versions.
 
-Here are six open tokenizers splitting the same text. Try the samples in
-other languages, or paste your own.
-
-{{widget:tokenizer}}
-
 ## Why LLMs are bad at spelling and arithmetic
 
 A lot of "the model is dumb" moments are really "the model can't see

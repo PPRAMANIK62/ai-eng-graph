@@ -17,8 +17,6 @@ import type { Root as MdRoot, PhrasingContent, Link } from "mdast";
 import type { Root as HastRoot, Element } from "hast";
 import NextLink from "next/link";
 import type { LinkedNode } from "./graph";
-import { WIDGET_LINE, type WidgetName } from "./widgets";
-import { Widget } from "@/components/widgets/widget";
 
 export type Heading = { id: string; text: string };
 
@@ -47,20 +45,6 @@ function remarkWikilinks() {
       if (last < node.value.length) parts.push({ type: "text", value: node.value.slice(last) });
       parent.children.splice(index, 1, ...parts);
       return [SKIP, index + parts.length];
-    });
-  };
-}
-
-/** A paragraph that is only {{widget:name}} becomes a slot the renderer fills with that widget. */
-function remarkWidgets() {
-  return (tree: MdRoot) => {
-    visit(tree, "paragraph", node => {
-      const only = node.children.length === 1 && node.children[0].type === "text" ? node.children[0].value.trim() : "";
-      const name = WIDGET_LINE.exec(only)?.[1];
-      if (!name) return;
-      node.children = [];
-      node.data = { hName: "div", hProperties: { "data-widget": name } };
-      return SKIP;
     });
   };
 }
@@ -103,7 +87,6 @@ export function renderMarkdown(
     .use(remarkGfm)
     // Math only between $$ … $$, so prices like "$2 to $10" stay text.
     .use(remarkMath, { singleDollarTextMath: false })
-    .use(remarkWidgets)
     .use(remarkWikilinks)
     .use(remarkSiteShape)
     .use(remarkRehype)
@@ -118,11 +101,6 @@ export function renderMarkdown(
   });
 
   const components: Partial<Components> = {
-    div: ({ children, ...rest }) => {
-      const widget = (rest as Record<string, unknown>)["data-widget"] as WidgetName | undefined;
-      // check.ts only lets known widget names through, so this is a real one.
-      return widget ? <Widget name={widget} /> : <div {...rest}>{children}</div>;
-    },
     a: ({ href, children, ...rest }) => {
       const id = (rest as Record<string, unknown>)["data-node"] as string | undefined;
       const node = id ? nodes.get(id) : undefined;

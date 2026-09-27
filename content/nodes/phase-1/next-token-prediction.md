@@ -90,11 +90,6 @@ temperature sticks close to the top choices. High temperature spreads the
 chance out to less likely ones. At a temperature of zero, in theory, the
 model always takes the top token.
 
-Here's the loop on a real, small model running in your browser: its list of
-next tokens, and a pick from it, one token at a time.
-
-{{widget:next-token}}
-
 ## Why it needs a model, not a lookup table
 
 Couldn't you just count which word usually follows each phrase in a big

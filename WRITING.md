@@ -24,7 +24,7 @@ sources are where we learned it; they're listed once at the end.
   term).
 - **Place the topic in the graph.** What you need first, what comes next,
   what it's often confused with.
-- **Add something original.** A redrawn diagram, a widget, or a small
+- **Add something original.** A redrawn diagram, or a small
   experiment that was actually run. "We ran their example, here's what we
   got" is enough. Never describe an experiment that wasn't run.
 

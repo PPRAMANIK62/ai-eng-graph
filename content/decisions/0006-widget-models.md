@@ -2,9 +2,9 @@
 id: 0006-widget-models
 title: Run the phase 1 widgets on open models in the reader's browser
 phase: 1
-status: proposed
+status: replaced
 date: 2026-09-26
-replaced_by:
+replaced_by: 0007-one-guide-not-widgets
 ---
 
 ## What I had to decide

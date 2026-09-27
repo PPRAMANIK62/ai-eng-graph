@@ -12,7 +12,6 @@
  *     and whatever is committed is published)
  *   - a written node lists no sources under Further reading
  *   - an image link ![..](img/..) points to a file that doesn't exist
- *   - a {{widget:name}} line names a widget that doesn't exist (lib/widgets.ts)
  * Warnings:
  *   - a [@citation] marker in the body instead of under Further reading
  *   - a source no node cites
@@ -31,7 +30,6 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
-import { WIDGETS } from "../lib/widgets";
 
 const ROOT = resolve(import.meta.dir, "..");
 const CONTENT = join(ROOT, "content");
@@ -51,7 +49,6 @@ const WIKILINK = /\[\[([a-z0-9-]+)(?:\|[^\]]*)?\]\]/g;
 const COMMENT = /<!--[\s\S]*?-->/g;
 const IMAGE = /!\[[^\]]*\]\(([^)\s]+)\)/g;
 const VISUAL = /<!--\s*VISUAL:/g;
-const WIDGET = /^\{\{widget:([^}]*)\}\}$/gm;
 const HEADING = /^#.*$/gm;
 
 type Value = string | string[];
@@ -67,7 +64,6 @@ type Node = {
   bodyCites: Set<string>;
   links: Set<string>;
   images: string[]; // absolute paths
-  widgets: string[]; // names from {{widget:name}} lines
   visualsTodo: number;
   words: number;
   where: string;
@@ -180,7 +176,6 @@ function loadNodes(errors: string[]): Map<string, Node> {
       links: new Set(all(WIKILINK, text)),
       images: all(IMAGE, text).filter(src => !src.startsWith("http")).map(src => resolve(dirname(path), src)),
       visualsTodo: (body.match(VISUAL) ?? []).length,
-      widgets: all(WIDGET, text),
       words: text.replace(IMAGE, "").split(/\s+/).filter(Boolean).length, // alt text isn't article prose
       where,
       cites: new Set(),
@@ -223,9 +218,6 @@ function checkNode(nid: string, n: Node, nodes: Map<string, Node>, sources: Map<
   if (n.written)
     for (const target of n.needs)
       if (!n.links.has(target)) warnings.push(`${where}: needs '${target}' but never links [[${target}]] in the text`);
-  for (const name of n.widgets)
-    if (!(WIDGETS as readonly string[]).includes(name))
-      errors.push(`${where}: {{widget:${name}}} isn't a widget, use one of ${pyList([...WIDGETS])}`);
   for (const img of n.images)
     if (!existsSync(img) || !statSync(img).isFile())
       errors.push(`${where}: image ${relative(ROOT, img)} doesn't exist (build it with visuals/build.ts)`);
