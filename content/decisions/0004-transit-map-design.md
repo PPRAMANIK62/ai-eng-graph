@@ -2,7 +2,7 @@
 id: 0004-transit-map-design
 title: Show the graph as a metro map, and use it as the whole site's design
 phase: 1
-status: proposed
+status: decided
 date: 2026-09-23
 replaced_by:
 ---

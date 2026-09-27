@@ -2,7 +2,7 @@
 id: 0001-site-framework
 title: Build the site with Next.js, not Astro
 phase: 1
-status: proposed
+status: decided
 date: 2026-09-23
 replaced_by:
 ---

@@ -2,7 +2,7 @@
 id: 0002-content-in-the-app-repo
 title: Keep the articles in the same repo as the app, read at build time, deploy on Vercel
 phase: 1
-status: proposed
+status: decided
 date: 2026-09-23
 replaced_by:
 ---
