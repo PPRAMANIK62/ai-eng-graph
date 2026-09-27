@@ -5,7 +5,7 @@
  *   - id doesn't match the file name, or a node isn't in nodes/phase-N/ for its phase
  *   - missing or invalid frontmatter fields
  *   - a graph link or inline [[link]] points to a node that doesn't exist
- *     (inline links are also checked in decisions/ and case-studies/)
+ *     (inline links are also checked in decisions/)
  *   - leads_to / needs aren't mirrored, compare_with isn't mirrored
  *   - a link under Further reading matches no source note's url
  *   - a node still has a status field (a node is planned until its body has text,
@@ -37,7 +37,7 @@ const ROOT = resolve(import.meta.dir, "..");
 const CONTENT = join(ROOT, "content");
 const NODES = join(CONTENT, "nodes");
 const SOURCES = join(CONTENT, "sources");
-const LINKING_DIRS = ["decisions", "case-studies"]; // [[links]] here must resolve too
+const LINKING_DIRS = ["decisions"]; // [[links]] here must resolve too
 
 const DEPTHS: Record<string, number> = { deep: 2500, short: 1000 }; // depth -> word limit
 const KINDS = ["blog", "book", "code", "docs", "paper", "spec", "talk"];

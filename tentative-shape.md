@@ -3,7 +3,9 @@
 Written 2026-09-23. **Not final.** This is a first guess at every node across
 all seven phases, so I can see where the project is going. Each phase still
 gets planned properly at its start (see `CLAUDE.md`), and these lists will
-change as I learn. No node files exist yet.
+change as I learn. Phases 1 and 2 now exist as node files in
+`content/nodes/`; for those, the files are the source of truth, not the
+tables here.
 
 How to read the tables:
 - **needs** lists what to read first. `leads_to` is the mirror of `needs`,
@@ -17,13 +19,13 @@ How to read the tables:
 | Phase | Theme | Deep | Short | Total |
 |---|---|---|---|---|
 | 1 | Foundations | 19 | 12 | 31 |
-| 2 | Retrieval | 11 | 10 | 21 |
+| 2 | Retrieval | 11 | 13 | 24 |
 | 3 | Workflows and structured data | 6 | 5 | 11 |
-| 4 | Evals and choosing models | 7 | 9 | 16 |
+| 4 | Evals and choosing models | 6 | 8 | 14 |
 | 5 | Agents | 8 | 3 | 11 |
 | 6 | Production and security | 5 | 10 | 15 |
 | 7 | Beyond text, open models | 5 | 5 | 10 |
-| | | **61** | **54** | **115** |
+| | | **60** | **56** | **116** |
 
 That's a lot of writing. Roughly 61 × 2,000 + 54 × 700 words, around 160,000
 words. Phase 1 is the heaviest because everything else builds on it.
@@ -104,29 +106,49 @@ next-token-prediction → tokenization → embeddings → attention → transfor
 
 ## Phase 2: Retrieval (skills 5, 6, 15)
 
+Revised 2026-09-27, after phase 1. Planned nodes now exist in
+`content/nodes/phase-2/`; they're the source of truth for links.
+
 | id | depth | note | needs | compare |
 |---|---|---|---|---|
 | `cosine-similarity` | short | How close two embeddings are, by the angle between them. | embeddings | |
 | `embedding-models` | short | Choosing an embedding model: size, dimensions, cost, benchmark vs my own data. | embeddings | |
 | `semantic-search`* | deep | Search by meaning: embed the query, find the nearest chunks. | cosine-similarity, embedding-models | bm25 |
-| `vector-index` | deep | Why exact nearest-neighbor search is too slow, and what approximate indexes trade away. | semantic-search | |
-| `hnsw` | deep | The graph-based index most vector databases use. | vector-index | |
+| `vector-index` | deep | Why exact nearest-neighbor search gets slow, and what approximate indexes trade away. | semantic-search | |
+| `hnsw` | short | The graph-based index most vector databases use. | vector-index | |
 | `pgvector`* | short | Vectors inside Postgres. What it supports and where it runs out. | hnsw | |
 | `bm25` | short | Keyword search that scores rare words higher. Still hard to beat. | | semantic-search |
 | `hybrid-search` | deep | Running keyword and vector search together and merging the results. | bm25, semantic-search | |
 | `reciprocal-rank-fusion`* | short | The simple formula most hybrid search uses to merge two ranked lists. | hybrid-search | |
-| `chunking` | deep | Cutting documents into pieces for retrieval. Size, overlap, structure-aware splits. | semantic-search | |
+| `chunking` | deep | Cutting documents into pieces for retrieval. Size, overlap, structure-aware splits. | semantic-search, tokenization | |
 | `reranking` | deep | A second, slower model that re-orders the top results. | hybrid-search | |
 | `rag` | deep | Retrieve relevant text, put it in the prompt, answer from it. | semantic-search, chunking, context-window | long-context, fine-tuning |
-| `grounding` | deep | Answering only from the given sources, with a citation for each claim. | rag | hallucination |
-| `retrieval-evaluation` | deep | Measuring the search step on its own, separate from the answer. | rag | |
+| `grounding` | deep | Answering only from the given sources, and nothing the model remembers. | rag, hallucination | |
+| `citations`* | short | Tying each claim in an answer to the source it came from, and showing it. | grounding, structured-output | |
+| `saying-i-dont-know` | deep | Deciding when the system doesn't have the answer, and saying so. | grounding, logprobs | |
+| `retrieval-evaluation` | deep | Measuring the search step on its own, separate from the answer. | rag, evals | |
 | `recall-at-k` | short | Of the chunks that should come back, how many are in the top k. | retrieval-evaluation | mrr |
 | `mrr` | short | How high the first right result ranks, on average. | retrieval-evaluation | recall-at-k |
 | `context-engineering` | deep | Deciding what goes in the context window and what stays out. | context-window, rag | |
-| `long-context` | deep | Putting whole documents in the prompt instead of retrieving pieces. When it wins. | context-window | rag |
+| `long-context` | short | Putting whole documents in the prompt instead of retrieving pieces. When it wins. | context-window | rag |
 | `lost-in-the-middle`* | short | Models use the start and end of a long prompt better than the middle. | long-context | |
-| `streaming-ui` | short | Showing a streamed answer well: partial text, sources, loading states. | streaming | |
-| `saying-i-dont-know` | short | Designing for the answer the system doesn't have, in the prompt and in the UI. | grounding | |
+| `streaming-ui` | short | Showing a streamed answer well: partial text, loading states. | streaming | |
+| `evals` | deep | Tests for AI features: a fixed set of inputs, a way to score outputs, a number to track. | llm-use-cases | |
+| `success-criteria` | short | Writing down what "good" means before building. | evals | |
+
+Changes from the first guess, and why:
+- `citations` split out of `grounding`: two concepts, and a build choice
+  (Claude's native citations can't be combined with JSON output).
+- `evals` and `success-criteria` moved up from phase 4: phase 2 builds the
+  first eval set, and the success criteria doc is owed from phase 1.
+- `saying-i-dont-know` short → deep: it's a done-when line, with a real
+  choice between a retrieval score threshold and the model's judgment.
+- `long-context` deep → short: `context-window` already covers why long
+  inputs degrade; what's left is the comparison with RAG.
+- `hnsw` deep → short: at this site's size an exact search is fast enough,
+  so the build may never use it.
+- `hallucination` now leads to `grounding` instead of comparing with it.
+- Still open: `query-rewriting`, only if the chat takes follow-up questions.
 
 ## Phase 3: Workflows and structured data (skills 2, 3, 7)
 
@@ -148,8 +170,6 @@ next-token-prediction → tokenization → embeddings → attention → transfor
 
 | id | depth | note | needs | compare |
 |---|---|---|---|---|
-| `evals` | deep | Tests for AI features: a fixed set of inputs, a way to score outputs, a number to track. | llm-use-cases | benchmarks |
-| `success-criteria` | short | Writing down what "good" means before building. | evals | |
 | `code-based-evals` | short | Checks a script can run: exact match, regex, schema, contains-citation. | evals | llm-as-judge |
 | `human-review` | short | People grading outputs. Slow and costly, and the usual reference point, though people miss things too. | evals | llm-as-judge |
 | `llm-as-judge` | deep | A model grading another model's output. | evals | human-review |
@@ -232,18 +252,14 @@ next-token-prediction → tokenization → embeddings → attention → transfor
 5. **`when-not-to-use-agents` is its own deep node** instead of a section of
    `agent-loop`. It's a common interview question.
 
-## Worth deciding before phase 1 starts
+## Open questions for later phases
 
-- **Phase 1 is big: 31 nodes, 19 deep.** Options: move `pretraining`,
-  `post-training` and `rlhf` to later, or drop `bpe`, `top-p` and
-  `role-prompting` into their parents. I'd keep the model-making nodes,
-  since `reasoning-models` and `fine-tuning` need them, and merge the
-  small ones if they turn out thin.
 - **Some shorts may be too small.** `offline-evals` and `online-evals` might
   make sense only together. `retries` and `provider-fallback` might merge.
 - **Missing on purpose:** math behind attention, training from scratch,
   anything about GPUs beyond what explains latency and cost. Out of scope
   per `PLAN.md`.
-- **Possibly missing:** `query-rewriting` (phase 2), `prompt-evaluation` vs
-  `evals` overlap, `computer-use` (phase 5), `cost-tracking` (phase 6). Add
-  them if a build step needs them.
+- **Possibly missing:** `query-rewriting` (phase 2, if the guide takes
+  follow-up questions), `prompt-evaluation` vs `evals` overlap,
+  `computer-use` (phase 5), `cost-tracking` (phase 6). Add them if a build
+  step needs them.

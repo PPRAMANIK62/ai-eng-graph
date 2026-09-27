@@ -154,15 +154,9 @@ hover notes. Rules:
 
 ## Planning the map
 
-Links are designed, not added by accident. At the start of each phase in
-`PLAN.md`, before any article in it is written:
-
-1. List every concept the phase needs.
-2. Create a `planned` node for each, with its note, depth, phase and links.
-3. Look at the whole map with `bun run check --map`. Fix
-   concepts that are too big or too small, missing links, and orphans.
-4. Only then start writing, in an order where `needs` come first.
-
+Links are designed, not added by accident. Each phase plans its whole part
+of the map before any article in it is written, then writes in an order
+where `needs` come first. The steps are "The phase loop" in `CLAUDE.md`.
 The map will change as I learn. That's fine, update the planned nodes when
 it does.
 

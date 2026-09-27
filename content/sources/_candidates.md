@@ -23,14 +23,13 @@ How each phase section is laid out:
 These came up in the research and affect builds or notes in `PLAN.md` and
 `tentative-shape.md`. Each needs a decision from me before its phase.
 
-1. **The phase 1 temperature widget has a problem.** Claude (Sonnet 5, and
-   Opus 4.7 and later) rejects any non-default `temperature`, `top_p` or
-   `top_k`, and I found no sign Claude returns logprobs. OpenAI's GPT-6 guide
-   says to drop `temperature`, `top_p` and `top_logprobs` whenever reasoning
-   is on. Gemini logprobs reportedly stopped working in 2026 (user reports,
-   not official). "A temperature slider driven by real logprobs" needs an
-   OpenAI model with reasoning off, or an open model. Needs a decision
-   record. (Phase 1a)
+1. **Most closed models no longer take sampling settings or return
+   logprobs.** Claude (Sonnet 5, and Opus 4.7 and later) rejects any
+   non-default `temperature`, `top_p` or `top_k`, and I found no sign Claude
+   returns logprobs. OpenAI's GPT-6 guide says to drop `temperature`, `top_p`
+   and `top_logprobs` whenever reasoning is on. Gemini logprobs reportedly
+   stopped working in 2026 (user reports, not official). This matters for
+   the guide's "I don't know" decision if it leans on logprobs. (Phase 2)
 2. **The phase 7 fine-tuning build can't use OpenAI.** OpenAI's fine-tuning
    platform is closed to new organizations since 2026-05-07, and no new jobs
    can start from 2027-01-06. Use an open model with TRL and PEFT. Needs a
