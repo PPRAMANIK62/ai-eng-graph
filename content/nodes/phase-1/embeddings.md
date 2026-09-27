@@ -6,7 +6,7 @@ phase: 1
 note: >-
   A token or piece of text turned into a list of numbers, where similar meanings sit close together.
 needs: [tokenization]
-leads_to: [attention]
+leads_to: [attention, cosine-similarity, embedding-models]
 compare_with: []
 updated: 2026-09-23
 ---

@@ -6,7 +6,7 @@ phase: 1
 note: >-
   The most tokens a model can take in and put out in one call, and what happens near the limit.
 needs: [tokenization, attention]
-leads_to: [chat-api]
+leads_to: [chat-api, rag, context-engineering, long-context]
 compare_with: []
 updated: 2026-09-23
 ---

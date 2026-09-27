@@ -6,8 +6,8 @@ phase: 1
 note: >-
   The model says something false in a confident voice. Why a next-token predictor does this.
 needs: [next-token-prediction, pretraining, post-training]
-leads_to: []
-compare_with: [grounding]
+leads_to: [grounding]
+compare_with: []
 updated: 2026-09-23
 ---
 

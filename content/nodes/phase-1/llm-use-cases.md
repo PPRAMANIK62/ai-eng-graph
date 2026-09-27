@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Good at turning messy text into structure, classifying, answering questions and running agents. Bad at anything that must give the same answer every time.
 needs: [ai-engineer, next-token-prediction]
-leads_to: []
+leads_to: [evals]
 compare_with: []
 updated: 2026-09-23
 ---

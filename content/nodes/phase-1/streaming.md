@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Sending tokens to the client as they come out, over server-sent events.
 needs: [prefill-decode, chat-api]
-leads_to: []
+leads_to: [streaming-ui]
 compare_with: []
 updated: 2026-09-23
 ---

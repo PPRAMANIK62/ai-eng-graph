@@ -6,7 +6,7 @@ phase: 1
 note: >-
   The log-probability the model gave each token. Some APIs return them; many newer models don't.
 needs: [softmax, next-token-prediction]
-leads_to: []
+leads_to: [saying-i-dont-know]
 compare_with: []
 updated: 2026-09-23
 ---

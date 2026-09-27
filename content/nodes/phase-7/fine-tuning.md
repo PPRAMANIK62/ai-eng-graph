@@ -7,7 +7,7 @@ note: >-
   Training an existing model further on your own examples. When it beats prompting or retrieval.
 needs: []
 leads_to: []
-compare_with: [few-shot-prompting]
+compare_with: [few-shot-prompting, rag]
 updated: 2026-09-23
 ---
 

@@ -7,7 +7,7 @@ note: >-
   Getting JSON that matches a schema instead of free text.
 needs: [chat-api]
 leads_to: []
-compare_with: []
+compare_with: [citations]
 updated: 2026-09-23
 ---
 
