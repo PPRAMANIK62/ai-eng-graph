@@ -27,6 +27,10 @@ A research report from Chroma that tested 18 models on tasks where only the inpu
 - Even copying a list of repeated words with one odd word inserted gets worse with length. "performance consistently degrades" (Repeated Words)
 - Scale of the study: 194,480 LLM calls. (Needle in a Haystack Extension)
 - How information is presented matters, not just whether it's there. "What matters more is how that information is presented" (Conclusion)
+- No position effect on their needle task. "Testing across 11 needle positions, we find no notable variation in performance for this specific NIAH task." (Needle-Question Similarity, Results; added 2026-09-27)
+- But on the repeated-words task position did matter. "Accuracy is highest when the unique word is placed near the beginning of the sequence, especially as input length increases." (Repeated Words; added 2026-09-27)
+- Less similar question and answer, faster decline. "performance degrades more quickly in input length with lower similarity needle-question pairs." (Needle-Question Similarity; added 2026-09-27)
+- Focused vs full prompts on LongMemEval: about 300 tokens of relevant history vs about 113k tokens of full history. "Across all models, we see significantly higher performance on focused prompts compared to full prompts." (LongMemEval; added 2026-09-27)
 
 ## Visuals worth redrawing
 

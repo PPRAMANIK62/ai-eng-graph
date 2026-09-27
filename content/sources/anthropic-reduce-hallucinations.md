@@ -24,6 +24,9 @@ A short practical guide from Anthropic on cutting down made-up answers in Claude
 - Iterative refinement: feed outputs back and ask the model to verify or expand them. (Advanced techniques)
 - Restrict knowledge. "Explicitly instruct Claude to only use information from provided documents and not its general knowledge." (Advanced techniques)
 - Limits. "while these techniques significantly reduce hallucinations, they don't eliminate them entirely." (closing note)
+- Give it the words to use. The M&A example prompt ends: "If you're unsure about any aspect or if the report lacks necessary information, say "I don't have enough information to confidently assess this."" (Allow Claude to say I don't know, example; re-checked 2026-09-27)
+- Quotes-first with an explicit empty case. "If you can't find relevant quotes, state "No relevant quotes found."" then "Only base your analysis on the extracted quotes." (Use direct quotes, privacy policy example; re-checked 2026-09-27)
+- Retracted claims are marked, not silently dropped: "remove that claim from the press release and mark where it was removed with empty [] brackets." (Verify with citations, example; re-checked 2026-09-27)
 
 ## Visuals worth redrawing
 

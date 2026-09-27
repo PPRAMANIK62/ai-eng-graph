@@ -28,6 +28,10 @@ OpenAI's guide to its embeddings endpoint: send text, get back one fixed-length 
 - Recommended distance: cosine; vectors come normalized to length 1. "We recommend cosine similarity. The choice of distance function typically doesn't matter much." and "OpenAI embeddings are normalized to length 1" (FAQ, Which distance function should I use?)
 - Embeddings as features: predicting a review's star rating from its embedding gave a mean absolute error of 0.39 stars. "achieves a mean absolute error of 0.39, which means that on average the prediction is off by less than half a star." (Regression using the embedding features)
 - The models have a knowledge cutoff too. "the text-embedding-3-large and text-embedding-3-small models lack knowledge of events that occurred after September 2021." (FAQ; model names are in code formatting on the page)
+- With length-1 vectors, cosine and Euclidean distance rank results the same way. "Cosine similarity and Euclidean distance will result in the identical rankings" (FAQ, Which distance function should I use?; added 2026-09-27)
+- A shortened large vector can beat an older full one. "on the MTEB benchmark, a text-embedding-3-large embedding can be shortened to a size of 256 while still outperforming an unshortened text-embedding-ada-002 embedding with a size of 1536." (Reducing embedding dimensions; code formatting stripped; added 2026-09-27)
+- The older model in the same table: text-embedding-ada-002, about 12,500 pages per dollar, MTEB 61.0%, 8192 max input. (Embedding models, table; added 2026-09-27)
+- If you cut a vector yourself instead of using the parameter, re-normalize it. "When you change the dimension manually, you need to be sure to normalize the dimensions of the embedding as is shown below." (Reducing embedding dimensions; added 2026-09-27)
 
 ## Visuals worth redrawing
 
