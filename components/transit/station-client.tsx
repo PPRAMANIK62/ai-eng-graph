@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, ViewTransition } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
@@ -11,6 +11,7 @@ import type { LinkedNode } from "@/lib/graph";
 import type { AtlasStation, TLine } from "./model";
 import { mainLine, minutes, planTrip } from "./route";
 import { mapHref, stationHref, useTrip } from "./trip";
+import { MORPH_VT, NAV } from "./nav";
 import { transitFonts } from "./fonts";
 import { ThemeSwitch } from "@/components/theme-switch";
 import s from "./transit.module.css";
@@ -72,89 +73,93 @@ export function StationStrip({ graph, lines, edgeLines, info, id, serving }: Sha
   const lineById = new Map(lines.map(l => [l.id, l]));
 
   return (
-    <div className={s.sign}>
-      <div className={s.signTop}>
-        <Link href={mapHref(info[id].phase, seq.to, id)} className={s.signBack}>
-          <ArrowLeft size={15} /> Map
-        </Link>
-        <span className={s.signWhere}>
-          {seq.mode === "route" ? (
-            <>
-              Trip to <b>{seq.label}</b> · stop {seq.index + 1} of {seq.stops.length}
-            </>
-          ) : seq.mode === "line" ? (
-            <>
-              <b>{seq.label}</b> · stop {seq.index + 1} of {seq.stops.length}
-            </>
-          ) : (
-            <>Not on a line yet</>
-          )}
-        </span>
-        {serving.length > 0 && (
-          <span className={s.signLines} aria-label="Lines serving this station">
-            {serving.map(l => {
-              const line = lineById.get(l)!;
-              return (
-                <span key={l} className={s.signLine} style={{ background: line.color, color: line.ink }}>
-                  {line.name.replace(/ line$/, "")}
-                </span>
-              );
-            })}
+    <ViewTransition name="sign-bar" share="vt-sign" default="none">
+      <div className={s.sign}>
+        <div className={s.signTop}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.signBack}>
+            <ArrowLeft size={15} /> Map
+          </Link>
+          <span className={s.signWhere}>
+            {seq.mode === "route" ? (
+              <>
+                Trip to <b>{seq.label}</b> · stop {seq.index + 1} of {seq.stops.length}
+              </>
+            ) : seq.mode === "line" ? (
+              <>
+                <b>{seq.label}</b> · stop {seq.index + 1} of {seq.stops.length}
+              </>
+            ) : (
+              <>Not on a line yet</>
+            )}
           </span>
-        )}
-        <ThemeSwitch id="station" />
-      </div>
+          {serving.length > 0 && (
+            <span className={s.signLines} aria-label="Lines serving this station">
+              {serving.map(l => {
+                const line = lineById.get(l)!;
+                return (
+                  <span key={l} className={s.signLine} style={{ background: line.color, color: line.ink }}>
+                    {line.name.replace(/ line$/, "")}
+                  </span>
+                );
+              })}
+            </span>
+          )}
+          <ThemeSwitch id="station" />
+        </div>
 
-      {/* The trip lives in this browser, so the strip waits for hydration rather than flash the wrong line. */}
-      {!hydrated ? (
-        <div className={s.stripWait} />
-      ) : (
-      <ol className={s.strip} key={`${seq.mode}-${seq.label}`}>
-        {lo > 0 && <li className={s.stripMore} aria-hidden>···</li>}
-        {shown.map((x, k) => {
-          const i = lo + k;
-          const here = i === seq.index;
-          const nextColor = seq.stops[i + 1]?.color;
-          return (
-            <li key={x.id} className={s.stripStop} data-here={here} data-done={done(x.id)} data-past={i < seq.index} data-far={Math.abs(i - seq.index) > 1}>
-              {i < seq.stops.length - 1 && (
+        {/* The trip lives in this browser, so the strip waits for hydration rather than flash the wrong line. */}
+        {!hydrated ? (
+          <div className={s.stripWait} />
+        ) : (
+        <ol className={s.strip} key={`${seq.mode}-${seq.label}`}>
+          {lo > 0 && <li className={s.stripMore} aria-hidden>···</li>}
+          {shown.map((x, k) => {
+            const i = lo + k;
+            const here = i === seq.index;
+            const nextColor = seq.stops[i + 1]?.color;
+            return (
+              <li key={x.id} className={s.stripStop} data-here={here} data-done={done(x.id)} data-past={i < seq.index} data-far={Math.abs(i - seq.index) > 1}>
+                {i < seq.stops.length - 1 && (
+                  <motion.span
+                    className={s.stripTrack}
+                    style={{ background: nextColor }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.45, ease: EASE_OUT, delay: 0.1 + k * 0.06 }}
+                  />
+                )}
                 <motion.span
-                  className={s.stripTrack}
-                  style={{ background: nextColor }}
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.45, ease: EASE_OUT, delay: 0.1 + k * 0.06 }}
+                  className={s.stripDot}
+                  initial={{ scale: 0.4, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", duration: 0.45, bounce: 0, delay: 0.08 + k * 0.06 }}
                 />
-              )}
-              <motion.span
-                className={s.stripDot}
-                initial={{ scale: 0.4, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", duration: 0.45, bounce: 0, delay: 0.08 + k * 0.06 }}
-              />
-              {here ? (
-                <span className={s.stripName}>
-                  <small>You are here</small>
-                  {info[x.id].name}
-                </span>
-              ) : info[x.id].readable ? (
-                <Link href={stationHref(x.id, seq.to)} className={s.stripName}>
-                  <small>{i === seq.index + 1 ? "Next" : i < seq.index ? "Earlier" : "Later"}</small>
-                  {info[x.id].name}
-                </Link>
-              ) : (
-                <span className={s.stripName} data-planned>
-                  <small>Opening later</small>
-                  {info[x.id].name}
-                </span>
-              )}
-            </li>
-          );
-        })}
-        {hi < seq.stops.length && <li className={s.stripMore} aria-hidden>···</li>}
-      </ol>
-      )}
-    </div>
+                {here ? (
+                  <span className={s.stripName}>
+                    <small>You are here</small>
+                    <ViewTransition name={`station-${x.id}`} share={MORPH_VT} default="none">
+                      <span className={s.vtName}>{info[x.id].name}</span>
+                    </ViewTransition>
+                  </span>
+                ) : info[x.id].readable ? (
+                  <Link href={stationHref(x.id, seq.to)} transitionTypes={i < seq.index ? NAV.back : NAV.forward} className={s.stripName}>
+                    <small>{i === seq.index + 1 ? "Next" : i < seq.index ? "Earlier" : "Later"}</small>
+                    {info[x.id].name}
+                  </Link>
+                ) : (
+                  <span className={s.stripName} data-planned>
+                    <small>Opening later</small>
+                    {info[x.id].name}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+          {hi < seq.stops.length && <li className={s.stripMore} aria-hidden>···</li>}
+        </ol>
+        )}
+      </div>
+    </ViewTransition>
   );
 }
 
@@ -185,7 +190,7 @@ export function StationEnd(props: Shared) {
           <span className={s.markBox}>
             <AnimatePresence initial={false}>
               {on && (
-                <motion.span key="c" style={{ display: "grid" }} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0, opacity: 0 }} transition={{ type: "spring", duration: 0.3, bounce: 0 }}>
+                <motion.span key="c" style={{ display: "grid" }} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ type: "spring", duration: 0.3, bounce: 0 }}>
                   <Check size={13} strokeWidth={3.4} />
                 </motion.span>
               )}
@@ -195,7 +200,7 @@ export function StationEnd(props: Shared) {
         </motion.button>
 
         {nextOk ? (
-          <Link href={stationHref(next.id, seq.to)} className={s.nextStop} style={{ "--c": next.color } as React.CSSProperties}>
+          <Link href={stationHref(next.id, seq.to)} transitionTypes={NAV.forward} className={s.nextStop} style={{ "--c": next.color } as React.CSSProperties}>
             <span>
               <small>Next stop</small>
               {info[next.id].name}
@@ -203,7 +208,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : seq.mode === "route" && seq.index === seq.stops.length - 1 ? (
-          <Link href={mapHref(info[id].phase, seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
             <span>
               <small>You&apos;ve arrived</small>
               Back to the map
@@ -211,7 +216,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : (
-          <Link href={mapHref(info[id].phase, seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
             <span>
               <small>{seq.mode === "line" ? "End of the line" : "No next stop"}</small>
               Back to the map
@@ -236,7 +241,7 @@ export function TransitConceptLink({ node, children }: { node: LinkedNode; child
   const hydrated = useHydrated();
   const done = hydrated && understood.has(node.id);
   const trigger = node.readable ? (
-    <Link href={stationHref(node.id, to)} className={s.clink} data-done={done} />
+    <Link href={stationHref(node.id, to)} transitionTypes={NAV.forward} className={s.clink} data-done={done} />
   ) : (
     <span className={s.clink} data-planned tabIndex={0} />
   );

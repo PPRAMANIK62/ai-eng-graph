@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ViewTransition } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ChevronDown, X } from "lucide-react";
 import type { AtlasStation, TLine, TransitMap } from "./model";
 import { minutes, type Stop } from "./route";
 import { stationHref } from "./trip";
+import { MORPH_VT, NAV } from "./nav";
 import type { StationState } from "./transit-map";
 import s from "./transit.module.css";
 
@@ -213,14 +214,16 @@ function TripView({
                   </span>
                 )}
                 <button type="button" className={s.stopName} onClick={() => onRide(i)} aria-current={i === rideIndex ? "step" : undefined}>
-                  {st.name}
+                  <ViewTransition name={`station-${x.id}`} share={MORPH_VT} default="none">
+                    <span className={s.vtName}>{st.name}</span>
+                  </ViewTransition>
                   {st.phase !== phase && <span className={s.zoneTag}>Zone {st.phase}</span>}
                 </button>
                 <span className={s.stopMeta}>
                   {minutes(st.words)} min · <span data-state={state}>{state === "done" ? "visited" : state === "ready" ? "ready" : "earlier stops first"}</span>
                 </span>
               </div>
-              <Link href={stationHref(x.id, to)} className={s.stopOpen} aria-label={`Open ${st.name}`}>
+              <Link href={stationHref(x.id, to)} transitionTypes={NAV.open} className={s.stopOpen} aria-label={`Open ${st.name}`}>
                 <ArrowRight size={15} />
               </Link>
             </motion.li>
@@ -238,7 +241,7 @@ function TripView({
           </span>
           <b>{name(current?.id ?? null)}</b>
         </div>
-        <Link href={stationHref(current.id, to)} className={s.board}>
+        <Link href={stationHref(current.id, to)} transitionTypes={NAV.open} className={s.board}>
           Read
         </Link>
         <button type="button" className={s.nextBtn} onClick={() => onRide(rideIndex + 1)} disabled={rideIndex >= stops.length - 1}>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Popover } from "@base-ui/react/popover";
 import { ChevronDown } from "lucide-react";
 import { mapHref } from "./trip";
+import { toward } from "./nav";
 import s from "./transit.module.css";
 
 export type ZoneLink = { phase: number; name: string; /** Readable home stations; 0 means the zone opens later. */ stops: number };
@@ -30,12 +31,14 @@ export function ZoneSwitch({ zones, phase, to }: { zones: ZoneLink[]; phase: num
           <Popover.Popup className={s.zonePanel} aria-label="Zones">
             <ol className={s.zoneStrip}>
               {running.map((z, i) => (
-                <li key={z.phase} className={s.zoneStop} data-last={i === running.length - 1}>
+                <li key={z.phase} className={s.zoneStop} data-last={i === running.length - 1} style={{ "--i": i } as React.CSSProperties}>
                   <Link
                     href={mapHref(z.phase, to)}
+                    transitionTypes={z.phase === phase ? undefined : toward(phase, z.phase)}
                     className={s.zoneRow}
                     aria-current={z.phase === phase ? "page" : undefined}
-                    onClick={() => setOpen(false)}
+                    // Other zones replace this whole map; closing here too would interrupt the page transition.
+                    onClick={z.phase === phase ? () => setOpen(false) : undefined}
                   >
                     <span className={s.zoneGlyph} aria-hidden />
                     <span className={s.zoneNum}>{z.phase}</span>

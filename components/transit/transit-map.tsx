@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, ViewTransition } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { select } from "d3-selection";
@@ -13,6 +13,7 @@ import { zoneLabel } from "@/lib/phases";
 import { STROKE, type AtlasStation, type TLine, type TransitMap as TMap, type TStation } from "./model";
 import { litSegments, planTrip } from "./route";
 import { mapHref, useTrip } from "./trip";
+import { toward } from "./nav";
 import { RouteCard } from "./route-card";
 import { SearchBox } from "./search-box";
 import { ZoneSwitch, type ZoneLink } from "./zone-switch";
@@ -75,7 +76,8 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
   const rideIndex = ride && ride.to === to ? ride.i : defaultIndex;
 
   const [lineFocus, setLineFocus] = useState<string | null>(null);
-  const [hover, setHover] = useState<{ id: string; x: number; y: number } | null>(null);
+  // A tooltip stays mounted briefly after the pointer leaves (on: false) so it can fade out.
+  const [hover, setHover] = useState<{ id: string; x: number; y: number; on: boolean } | null>(null);
 
   // ---------- camera (transform lives in d3, never in React state) ----------
   const stageRef = useRef<HTMLDivElement>(null);
@@ -172,28 +174,28 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
       const j = Math.max(0, Math.min(stops.length - 1, i));
       const id = stops[j].id;
       // A stop drawn on another zone's map: ride on over there.
-      if (!byId.has(id)) return router.push(mapHref(info[id].phase, to, id));
+      if (!byId.has(id)) return router.push(mapHref(info[id].phase, to, id), { transitionTypes: toward(map.phase, info[id].phase) });
       setRide({ to, i: j });
       flyToStation(id);
     },
-    [to, stops, byId, info, router, flyToStation],
+    [to, stops, byId, info, router, flyToStation, map.phase],
   );
 
   const choose = useCallback(
     (id: string) => {
       const st = byId.get(id);
-      if (st?.transfer) return router.push(mapHref(st.phase, to, id));
+      if (st?.transfer) return router.push(mapHref(st.phase, to, id), { transitionTypes: toward(map.phase, st.phase) });
       if (!st?.readable || st.detached) return;
       framedFor.current = null;
       setRide(null);
       setTo(id);
     },
-    [byId, to, router, setTo],
+    [byId, to, router, setTo, map.phase],
   );
 
   const pick = useCallback(
     (id: string) =>
-      info[id].phase === map.phase ? choose(id) : router.push(mapHref(info[id].phase, id)),
+      info[id].phase === map.phase ? choose(id) : router.push(mapHref(info[id].phase, id), { transitionTypes: toward(map.phase, info[id].phase) }),
     [info, map.phase, choose, router],
   );
   const searchable = useMemo(() => Object.entries(info).filter(([id]) => rideable(id)).map(([id, x]) => ({ id, ...x })), [info, rideable]);
@@ -203,7 +205,7 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
     const t = svg ? zoomTransform(svg) : undefined;
     if (!t) return;
     hoverRef.current = true;
-    setHover({ id: st.id, x: st.x * t.k + t.x, y: (st.y - st.hh) * t.k + t.y });
+    setHover({ id: st.id, x: st.x * t.k + t.x, y: (st.y - st.hh) * t.k + t.y, on: true });
   };
 
   // Keyboard users: bring a focused station into view if it's off screen.
@@ -238,19 +240,21 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
 
   return (
     <div className={s.mapShell}>
-      <header className={s.bar}>
-        <div className={s.brand}>
-          <span className={s.brandMark} aria-hidden>
-            <span />
-          </span>
-          <span>
-            <b>AI engineering</b> <span className={s.brandSub}>metro</span>
-          </span>
-        </div>
-        <ZoneSwitch zones={zones} phase={map.phase} to={to} />
-        <SearchBox stations={searchable} phase={map.phase} lines={lines} stateOf={stateOf} onPick={pick} />
-        <ThemeSwitch id="map" />
-      </header>
+      <ViewTransition name="sign-bar" share="vt-sign" default="none">
+        <header className={s.bar}>
+          <div className={s.brand}>
+            <span className={s.brandMark} aria-hidden>
+              <span />
+            </span>
+            <span>
+              <b>AI engineering</b> <span className={s.brandSub}>metro</span>
+            </span>
+          </div>
+          <ZoneSwitch zones={zones} phase={map.phase} to={to} />
+          <SearchBox stations={searchable} phase={map.phase} lines={lines} stateOf={stateOf} onPick={pick} />
+          <ThemeSwitch id="map" />
+        </header>
+      </ViewTransition>
 
       <div ref={stageRef} className={s.stage}>
         <svg ref={svgRef} className={s.svg} role="group" aria-label={`Metro map of ${zoneLabel(map.phase)}. Drag to pan, scroll to zoom.`}>
@@ -360,10 +364,7 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
                   }}
                   onFocus={() => onStationFocus(st)}
                   onPointerEnter={() => showHover(st)}
-                  onPointerLeave={() => {
-                    hoverRef.current = false;
-                    setHover(null);
-                  }}
+                  onPointerLeave={() => setHover(h => h && { ...h, on: false })}
                 >
                   <rect className={s.hit} x={-22} y={-st.hh - 14} width={44} height={st.hh * 2 + 28} />
                   <rect className={s.halo} x={-w / 2 - 5} y={-st.hh - 5} width={w + 10} height={st.hh * 2 + 10} rx={w / 2 + 5} />
@@ -388,7 +389,7 @@ export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props)
         </svg>
 
         {hovered && hover && (
-          <div className={s.tip} style={{ left: hover.x, top: hover.y }} role="tooltip">
+          <div className={s.tip} style={{ left: hover.x, top: hover.y }} role="tooltip" data-on={hover.on} aria-hidden={!hover.on}>
             <div className={s.tipLines}>
               {hovered.lines.map(l => (
                 <span key={l} style={{ background: lineById.get(l)!.color }} />

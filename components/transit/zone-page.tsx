@@ -1,10 +1,11 @@
 import "server-only";
 
-import { cache } from "react";
+import { cache, ViewTransition } from "react";
 import { getGraph } from "@/lib/content";
 import { PHASES, PHASE_NAMES } from "@/lib/phases";
 import { computeAtlas } from "./model";
 import { TransitMap } from "./transit-map";
+import { PAGE_VT } from "./nav";
 
 export const getAtlas = cache(() => computeAtlas(getGraph()));
 
@@ -20,5 +21,9 @@ export function ZonePage({ phase }: { phase: number }) {
   }));
   // The client only needs needs-edges for trails and reader state.
   const slim = { ...graph, edges: graph.edges.filter(e => e.kind === "needs") };
-  return <TransitMap graph={slim} map={zone.map} lines={atlas.lines} edgeLines={atlas.edgeLines} info={atlas.stations} zones={zones} />;
+  return (
+    <ViewTransition key={phase} enter={PAGE_VT} exit={PAGE_VT} default="none">
+      <TransitMap graph={slim} map={zone.map} lines={atlas.lines} edgeLines={atlas.edgeLines} info={atlas.stations} zones={zones} />
+    </ViewTransition>
+  );
 }

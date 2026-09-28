@@ -81,8 +81,8 @@ export function SearchBox({
           }
         }}
       />
-      {open && results.length > 0 && (
-        <ul id={listId} role="listbox" className={s.results}>
+      {results.length > 0 && (
+        <ul id={listId} role="listbox" className={s.results} data-open={open}>
           {results.map((r, i) => (
             <li
               key={r.id}

@@ -147,3 +147,87 @@
   animation-duration: 220ms;
   animation-timing-function: var(--t-ease);
 }
+
+/* Navigation. Pages ride sideways (forward, back: a higher zone or a later stop moves the
+   page left) or go down into a station and back up to the map (open, close). The old page
+   leaves fast; the new one arrives a beat later. The sign bar stays put and stretches, and
+   the station you open carries from the route card to "you are here" on the station sign. Types are set per link,
+   see components/transit/nav.ts. */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(.vt-forward) { --vt-x: -48px; }
+::view-transition-new(.vt-forward) { --vt-x: 48px; }
+::view-transition-old(.vt-back) { --vt-x: 48px; }
+::view-transition-new(.vt-back) { --vt-x: -48px; }
+::view-transition-old(.vt-open) { --vt-y: -12px; }
+::view-transition-new(.vt-open) { --vt-y: 28px; }
+::view-transition-old(.vt-close) { --vt-y: 28px; }
+::view-transition-new(.vt-close) { --vt-y: -12px; }
+::view-transition-old(.vt-forward),
+::view-transition-old(.vt-back),
+::view-transition-old(.vt-open),
+::view-transition-old(.vt-close) {
+  animation:
+    140ms var(--t-ease) both t-vt-out,
+    320ms var(--t-ease-io) both t-vt-leave;
+}
+::view-transition-new(.vt-forward),
+::view-transition-new(.vt-back),
+::view-transition-new(.vt-open),
+::view-transition-new(.vt-close) {
+  animation:
+    220ms var(--t-ease) 80ms both t-vt-in,
+    320ms var(--t-ease-io) both t-vt-arrive;
+}
+
+::view-transition-group(sign-bar) {
+  z-index: 10;
+  overflow: clip;
+  animation-duration: 320ms;
+  animation-timing-function: var(--t-ease-io);
+}
+::view-transition-old(sign-bar),
+::view-transition-new(sign-bar) {
+  height: 100%;
+  object-fit: none;
+  object-position: top;
+  animation-duration: 200ms;
+  animation-timing-function: var(--t-ease);
+}
+
+::view-transition-group(.vt-morph) {
+  z-index: 11;
+  animation-duration: 320ms;
+  animation-timing-function: var(--t-ease-io);
+}
+::view-transition-image-pair(.vt-morph) {
+  animation: 320ms var(--t-ease-io) t-vt-blur;
+}
+
+@keyframes t-vt-out { to { opacity: 0; } }
+@keyframes t-vt-in { from { opacity: 0; } }
+@keyframes t-vt-leave { to { translate: var(--vt-x, 0) var(--vt-y, 0); } }
+@keyframes t-vt-arrive { from { translate: var(--vt-x, 0) var(--vt-y, 0); } }
+@keyframes t-vt-blur { 40% { filter: blur(2px); } }
+
+/* Reduced motion: things still fade, nothing travels. Keyframe motion (map intro, pops,
+   sheets) finishes at once; transitions on color and opacity stay. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    --vt-x: 0 !important;
+    --vt-y: 0 !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*) {
+    animation-duration: 0s !important;
+  }
+}
