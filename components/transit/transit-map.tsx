@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { select } from "d3-selection";
 import { zoom, zoomIdentity, zoomTransform, type ZoomBehavior } from "d3-zoom";
@@ -8,11 +9,13 @@ import "d3-transition";
 import { Maximize2, Minus, Plus } from "lucide-react";
 import { readerState, type Graph } from "@/lib/graph";
 import { useHydrated, useUnderstood } from "@/lib/progress";
-import { STROKE, type TransitMap as TMap, type TStation } from "./model";
+import { zoneLabel } from "@/lib/phases";
+import { STROKE, type AtlasStation, type TLine, type TransitMap as TMap, type TStation } from "./model";
 import { litSegments, planTrip } from "./route";
-import { useTrip } from "./trip";
+import { mapHref, useTrip } from "./trip";
 import { RouteCard } from "./route-card";
 import { SearchBox } from "./search-box";
+import { ZoneSwitch, type ZoneLink } from "./zone-switch";
 import { ThemeSwitch } from "@/components/theme-switch";
 import s from "./transit.module.css";
 
@@ -25,7 +28,19 @@ const GLYPH_W = 16;
 const noop = () => () => {};
 const readAt = () => new URLSearchParams(window.location.search).get("at");
 
-export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
+type Props = {
+  graph: Graph;
+  /** This zone's map. */
+  map: TMap;
+  /** Every zone's lines and edge lines, so a trip can cross zones. */
+  lines: TLine[];
+  edgeLines: Record<string, string[]>;
+  info: Record<string, AtlasStation>;
+  zones: ZoneLink[];
+};
+
+export function TransitMap({ graph, map, lines, edgeLines, info, zones }: Props) {
+  const router = useRouter();
   const { understood } = useUnderstood();
   const hydrated = useHydrated();
   const { to: rawTo, setTo } = useTrip();
@@ -33,17 +48,19 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
   const reduce = useReducedMotion();
 
   const byId = useMemo(() => new Map(map.stations.map(st => [st.id, st])), [map]);
-  const lineById = useMemo(() => new Map(map.lines.map(l => [l.id, l])), [map]);
+  const lineById = useMemo(() => new Map(lines.map(l => [l.id, l])), [lines]);
   const segById = useMemo(() => new Map(map.segments.map(g => [g.id, g])), [map]);
-  const to = rawTo && byId.get(rawTo)?.readable && !byId.get(rawTo)?.detached ? rawTo : null;
+  // A destination anywhere in the atlas, as long as a line reaches it.
+  const rideable = useCallback((id: string) => !!info[id]?.readable && info[id].lines.length > 0, [info]);
+  const to = rawTo && rideable(rawTo) ? rawTo : null;
 
   const stateOf = useCallback(
-    (id: string): StationState => (byId.get(id)?.readable ? readerState(graph, id, hydrated ? understood : new Set()) : "planned"),
-    [byId, graph, understood, hydrated],
+    (id: string): StationState => (info[id]?.readable ? readerState(graph, id, hydrated ? understood : new Set()) : "planned"),
+    [info, graph, understood, hydrated],
   );
 
-  const stops = useMemo(() => (to ? planTrip(graph, map.edgeLines, to) : []), [graph, map.edgeLines, to]);
-  const lit = useMemo(() => (to ? litSegments(graph, map.edgeLines, stops) : []), [graph, map.edgeLines, stops, to]);
+  const stops = useMemo(() => (to ? planTrip(graph, edgeLines, to) : []), [graph, edgeLines, to]);
+  const lit = useMemo(() => (to ? litSegments(graph, edgeLines, stops) : []), [graph, edgeLines, stops, to]);
   const inTrip = useMemo(() => new Set(stops.map(x => x.id)), [stops]);
 
   // Where you are on the ride. Defaults to the station you came back from, else the first stop not yet visited.
@@ -140,6 +157,7 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
     if (!to || framedFor.current === to) return;
     framedFor.current = to;
     const pts = stops.map(x => byId.get(x.id)!).filter(Boolean);
+    if (!pts.length) return;
     if (at && pts.some(p => p.id === at)) {
       flyToStation(at);
       return;
@@ -152,22 +170,33 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
     (i: number) => {
       if (!to || !stops.length) return;
       const j = Math.max(0, Math.min(stops.length - 1, i));
+      const id = stops[j].id;
+      // A stop drawn on another zone's map: ride on over there.
+      if (!byId.has(id)) return router.push(mapHref(info[id].phase, to, id));
       setRide({ to, i: j });
-      flyToStation(stops[j].id);
+      flyToStation(id);
     },
-    [to, stops, flyToStation],
+    [to, stops, byId, info, router, flyToStation],
   );
 
   const choose = useCallback(
     (id: string) => {
       const st = byId.get(id);
+      if (st?.transfer) return router.push(mapHref(st.phase, to, id));
       if (!st?.readable || st.detached) return;
       framedFor.current = null;
       setRide(null);
       setTo(id);
     },
-    [byId, setTo],
+    [byId, to, router, setTo],
   );
+
+  const pick = useCallback(
+    (id: string) =>
+      info[id].phase === map.phase ? choose(id) : router.push(mapHref(info[id].phase, id)),
+    [info, map.phase, choose, router],
+  );
+  const searchable = useMemo(() => Object.entries(info).filter(([id]) => rideable(id)).map(([id, x]) => ({ id, ...x })), [info, rideable]);
 
   const showHover = (st: TStation) => {
     const svg = svgRef.current;
@@ -218,12 +247,13 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
             <b>AI engineering</b> <span className={s.brandSub}>metro</span>
           </span>
         </div>
-        <SearchBox stations={map.stations.filter(x => x.readable && !x.detached)} lines={map.lines} stateOf={stateOf} onPick={choose} />
+        <ZoneSwitch zones={zones} phase={map.phase} to={to} />
+        <SearchBox stations={searchable} phase={map.phase} lines={lines} stateOf={stateOf} onPick={pick} />
         <ThemeSwitch id="map" />
       </header>
 
       <div ref={stageRef} className={s.stage}>
-        <svg ref={svgRef} className={s.svg} role="group" aria-label="Metro map of AI engineering concepts. Drag to pan, scroll to zoom.">
+        <svg ref={svgRef} className={s.svg} role="group" aria-label={`Metro map of ${zoneLabel(map.phase)}. Drag to pan, scroll to zoom.`}>
           <g ref={viewRef}>
             {map.later && (
               <g className={s.later} data-dim={!!to}>
@@ -272,6 +302,7 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
                   className={s.label}
                   data-dim={dimStation(st)}
                   data-planned={!st.readable}
+                  data-transfer={st.transfer}
                   data-dest={to === l.id}
                   transform={`translate(${l.x} ${l.y}) rotate(${l.rotate})`}
                   textAnchor={l.anchor}
@@ -279,6 +310,7 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
                   {l.rows.map((r, i) => (
                     <tspan key={i} x={0} dy={i ? 16 : 0}>
                       {r}
+                      {st.transfer && i === l.rows.length - 1 && <tspan className={s.labelZone}> Zone {st.phase}</tspan>}
                     </tspan>
                   ))}
                 </text>
@@ -303,16 +335,22 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
             {orderedStations.map(st => {
               const state = stateOf(st.id);
               const w = GLYPH_W;
+              const acts = st.readable || st.transfer;
               return (
                 <g
                   key={st.id}
                   className={s.station}
                   data-state={state}
                   data-dim={dimStation(st)}
+                  data-transfer={st.transfer}
                   transform={`translate(${st.x} ${st.y})`}
-                  tabIndex={st.readable ? 0 : -1}
-                  role={st.readable ? "button" : "img"}
-                  aria-label={`${st.name}. ${STATE_TEXT[state]}.${st.readable ? " Plan a trip here." : ""}`}
+                  tabIndex={acts ? 0 : -1}
+                  role={acts ? "button" : "img"}
+                  aria-label={
+                    st.transfer
+                      ? `${st.name}. Change here for ${zoneLabel(st.phase)}.`
+                      : `${st.name}. ${STATE_TEXT[state]}.${st.readable ? " Plan a trip here." : ""}`
+                  }
                   onClick={() => choose(st.id)}
                   onKeyDown={e => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -358,6 +396,7 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
             </div>
             <b>{hovered.name}</b>
             <p>{hovered.note}</p>
+            {hovered.transfer && <span className={s.tipZone}>Change here for {zoneLabel(hovered.phase)}</span>}
             <span className={s.tipState} data-state={stateOf(hovered.id)}>
               {STATE_TEXT[stateOf(hovered.id)]}
               {hovered.readable && ` · ${Math.max(1, Math.round(hovered.words / 230))} min`}
@@ -382,6 +421,8 @@ export function TransitMap({ graph, map }: { graph: Graph; map: TMap }) {
 
       <RouteCard
         map={map}
+        lineById={lineById}
+        info={info}
         stops={stops}
         to={to}
         rideIndex={rideIndex}

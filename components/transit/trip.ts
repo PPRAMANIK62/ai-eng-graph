@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
+import { zoneHref } from "@/lib/phases";
 
 // The planned trip (destination station id). Lives in the URL (?to=) and in localStorage,
 // so it survives going from the map to a station and back.
@@ -51,11 +52,11 @@ export function stationHref(id: string, to: string | null) {
   return to ? `/n/${id}?to=${to}` : `/n/${id}`;
 }
 
-/** Link back to the map, at a given station. */
-export function mapHref(to: string | null, at?: string) {
+/** Link to a zone's map, at a given station. */
+export function mapHref(phase: number, to: string | null, at?: string) {
   const q = new URLSearchParams();
   if (to) q.set("to", to);
   if (at) q.set("at", at);
   const s = q.toString();
-  return s ? `/?${s}` : "/";
+  return s ? `${zoneHref(phase)}?${s}` : zoneHref(phase);
 }

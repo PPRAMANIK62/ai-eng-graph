@@ -1437,3 +1437,270 @@ a.clink:hover {
 @media (max-width: 599px) {
   .brand > span:last-child { display: none; }
 }
+
+/* ---------------- zones ---------------- */
+
+/* The trigger: set like the rest of the sign, a small "Zone 1" over nothing, then the name. */
+.zoneTrigger {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 10px;
+  margin-left: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--t-sign-ink);
+  font-family: var(--transit-sign);
+  white-space: nowrap;
+  line-height: 36px;
+}
+/* A hairline between the brand and the zone, like the rule between panels on a sign. */
+.zoneTrigger::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 9px;
+  bottom: 9px;
+  width: 1px;
+  background: var(--t-sign-2);
+}
+.zoneTrigger[data-popup-open] {
+  background: var(--t-sign-2);
+}
+@media (hover: hover) and (pointer: fine) {
+  .zoneTrigger:hover {
+    background: var(--t-sign-2);
+  }
+}
+.zonePlate {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--t-sign-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.zonePlate b {
+  font-weight: 800;
+  color: var(--t-sign-ink);
+}
+.zoneName {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--t-sign-ink);
+}
+.zoneChevron {
+  align-self: center;
+  margin-left: -2px;
+  color: var(--t-sign-ink-2);
+}
+.zoneTrigger[data-popup-open] .zoneChevron {
+  rotate: 180deg;
+}
+
+/* The panel: the line diagram above a train's doors. One track, a station per zone. */
+.zonePositioner {
+  z-index: 20;
+  max-width: var(--available-width);
+}
+.zonePanel {
+  --row: 38px;
+  --rail: 36px;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 6px;
+  background: var(--t-surface);
+  color: var(--t-ink);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px -14px rgb(var(--t-shadow) / 0.35), 0 0 0 1px var(--t-rule);
+  outline: none;
+}
+.zoneStrip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.zoneStop {
+  position: relative;
+}
+/* Solid track through the running zones. */
+.zoneStop:not([data-later])::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--rail) / 2 - 2px);
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--t-ink);
+}
+.zoneStop:first-child::before {
+  top: 50%;
+}
+.zoneStop[data-last="true"]::before {
+  bottom: 50%;
+}
+.zoneStop:first-child[data-last="true"]::before {
+  display: none;
+}
+.zoneRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--row);
+  padding-right: 10px;
+  border-radius: 9px;
+  font-family: var(--transit-sign);
+  font-size: 15px;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.zoneGlyph {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0 1px 0 calc(var(--rail) / 2 - 7px);
+  border-radius: 50%;
+  background: var(--t-ink);
+}
+.zoneNum {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.zoneRowName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zoneCount {
+  font-family: var(--transit-text), system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--t-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+@media (hover: hover) and (pointer: fine) {
+  a.zoneRow:hover {
+    background: var(--t-panel);
+  }
+  a.zoneRow:hover .zoneGlyph {
+    transform: scale(1.2);
+  }
+}
+.zoneRow[aria-current="page"] {
+  background: var(--t-signal-tint);
+}
+.zoneRow[aria-current="page"] .zoneGlyph {
+  box-shadow: 0 0 0 3px var(--t-surface), 0 0 0 6px var(--t-signal);
+}
+.zoneRow:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Zones not open yet: a dashed section, hollow stations, one caption. */
+.zoneLater {
+  position: relative;
+  padding-top: 4px;
+}
+.zoneLater::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--rail) / 2 - 1px);
+  top: calc(var(--row) / -2);
+  bottom: calc(var(--row) / 2);
+  border-left: 2px dashed var(--t-ink-3);
+  opacity: 0.7;
+}
+.zoneLaterTitle {
+  display: block;
+  padding: 4px 0 2px var(--rail);
+  font-family: var(--transit-sign);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--t-ink-3);
+}
+.zoneStop[data-later] .zoneRow {
+  color: var(--t-ink-3);
+  cursor: default;
+}
+.zoneStop[data-later] .zoneGlyph {
+  width: 12px;
+  height: 12px;
+  margin-left: calc(var(--rail) / 2 - 6px);
+  margin-right: 3px;
+  background: var(--t-surface);
+  border: 2px solid var(--t-ink-3);
+}
+.zoneStop[data-later] .zoneNum {
+  border-color: var(--t-rule);
+}
+
+.zoneTag {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--t-panel);
+  color: var(--t-ink-2);
+  font-family: var(--transit-text), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+/* Transfer stations: hollow, thin, in the quiet ink. They belong to another zone. */
+.station[data-transfer="true"] .glyph {
+  fill: var(--t-ground);
+  stroke: var(--t-ink-3);
+  stroke-width: 2px;
+  stroke-dasharray: none;
+}
+.station[data-transfer="true"][data-state="done"] .glyph {
+  fill: var(--t-ink-3);
+}
+.station[data-transfer="true"] .halo {
+  opacity: 0;
+}
+.station[data-transfer="true"][data-state="planned"] {
+  cursor: pointer;
+}
+.label[data-transfer="true"] {
+  fill: var(--t-ink-2);
+}
+.labelZone {
+  font-size: 0.8em;
+  font-weight: 800;
+  fill: var(--t-ink-3);
+}
+.tipZone {
+  display: block;
+  margin: 6px 0 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--t-link);
+}
+
+@media (max-width: 599px) {
+  .zoneTrigger .zoneName {
+    display: none;
+  }
+}

@@ -2,18 +2,21 @@
 
 import { useId, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import type { TLine, TStation } from "./model";
+import type { AtlasStation, TLine } from "./model";
 import type { StationState } from "./transit-map";
 import s from "./transit.module.css";
 
-/** "Where to?" A combobox over station names and article titles. */
+/** "Where to?" A combobox over station names and article titles, in every zone. */
 export function SearchBox({
   stations,
+  phase,
   lines,
   stateOf,
   onPick,
 }: {
-  stations: TStation[];
+  stations: (AtlasStation & { id: string })[];
+  /** The zone on screen; stations elsewhere get a zone tag. */
+  phase: number;
   lines: TLine[];
   stateOf: (id: string) => StationState;
   onPick: (id: string) => void;
@@ -96,7 +99,10 @@ export function SearchBox({
                   <i key={l} style={{ background: color.get(l) }} />
                 ))}
               </span>
-              <span className={s.resName}>{r.name}</span>
+              <span className={s.resName}>
+                {r.name}
+                {r.phase !== phase && <span className={s.zoneTag}>Zone {r.phase}</span>}
+              </span>
               <span className={s.resState} data-state={stateOf(r.id)}>
                 {stateOf(r.id) === "done" ? "visited" : stateOf(r.id) === "ready" ? "ready" : ""}
               </span>

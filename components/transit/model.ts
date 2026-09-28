@@ -1,5 +1,7 @@
-// The graph drawn as a transit map. Pure and deterministic: runs on the server, result is plain data.
+// The graph drawn as transit maps, one per phase (a "zone" on the site). Pure and deterministic:
+// runs on the server, result is plain data.
 //
+// 0. Subgraph: the phase's nodes, plus transfer stations (direct prerequisites from other phases).
 // 1. Lines: a greedy path cover of the `needs` DAG. Keep taking the root-to-leaf path that
 //    covers the most not-yet-covered edges (then the longest), until no path adds 2+ new edges.
 //    Leftover edges become branches of the nearest line.
@@ -8,10 +10,12 @@
 //    Segments bend only at 45° or 90°.
 // 3. Labels: first spot (above, below, 45°...) that hits no station, label or line.
 
-import type { Graph } from "@/lib/graph";
+import type { Graph, NodeSummary } from "@/lib/graph";
+import { PHASES, PHASE_NAMES } from "@/lib/phases";
 
 export type TLine = {
   id: string;
+  phase: number;
   name: string;
   color: string;
   /** Text color that reads on `color`. */
@@ -29,6 +33,10 @@ export type TStation = {
   level: number;
   words: number;
   readable: boolean;
+  /** Home phase. */
+  phase: number;
+  /** From another phase: drawn here only as the place to change for it. */
+  transfer: boolean;
   x: number;
   y: number;
   /** Lines serving this station, top to bottom. */
@@ -47,6 +55,7 @@ export type TSegment = { id: string; line: string; from: string; to: string; d: 
 export type TLabel = { id: string; x: number; y: number; rotate: number; anchor: "start" | "middle" | "end"; rows: string[] };
 
 export type TransitMap = {
+  phase: number;
   width: number;
   height: number;
   lines: TLine[];
@@ -92,7 +101,7 @@ const key = (a: string, b: string) => `${a}>${b}`;
 
 // ---------- 1. Lines ----------
 
-function buildLines(graph: Graph): TLine[] {
+function buildLines(graph: Graph, phase: number): TLine[] {
   const needs = graph.edges.filter(e => e.kind === "needs");
   const children = new Map<string, string[]>();
   const parents = new Map<string, string[]>();
@@ -135,7 +144,8 @@ function buildLines(graph: Graph): TLine[] {
     for (let i = 1; i < best.path.length; i++) covered.add(key(best.path[i - 1], best.path[i]));
   }
 
-  const lines: TLine[] = paths.map((stations, i) => ({ id: `l${i}`, name: "", ...COLORS[i % COLORS.length], stations, branches: [] }));
+  const lineId = (i: number) => `p${phase}-l${i}`;
+  const lines: TLine[] = paths.map((stations, i) => ({ id: lineId(i), phase, name: "", ...COLORS[i % COLORS.length], stations, branches: [] }));
 
   // Leftover edges: branches of the nearest line. Sources first, so a branch can hang off a branch.
   const leftovers = needs
@@ -149,7 +159,7 @@ function buildLines(graph: Graph): TLine[] {
     let line = both[0] ?? into[0] ?? from[0];
     if (!line) {
       // An island no line reaches: it gets its own short line.
-      line = { id: `l${lines.length}`, name: "", ...COLORS[lines.length % COLORS.length], stations: [e.source, e.target], branches: [] };
+      line = { id: lineId(lines.length), phase, name: "", ...COLORS[lines.length % COLORS.length], stations: [e.source, e.target], branches: [] };
       lines.push(line);
       continue;
     }
@@ -225,8 +235,25 @@ function toPath(pts: Pt[]): string {
   return `${d} L${f(last.x)} ${f(last.y)}`;
 }
 
-export function computeTransit(graph: Graph): TransitMap {
-  const lines = buildLines(graph);
+/** The phase's nodes plus transfers, with `level` recomputed inside it. */
+function phaseGraph(g: Graph, phase: number): Graph {
+  const home = new Set(g.nodes.filter(n => n.phase === phase).map(n => n.id));
+  const edges = g.edges.filter(e => e.kind === "needs" && home.has(e.target));
+  const ids = new Set([...home, ...edges.map(e => e.source)]);
+  const parents = new Map<string, string[]>();
+  for (const e of edges) parents.set(e.target, [...(parents.get(e.target) ?? []), e.source]);
+  const level = new Map<string, number>();
+  const levelOf = (id: string): number => {
+    if (!level.has(id)) level.set(id, Math.max(-1, ...(parents.get(id) ?? []).map(levelOf)) + 1);
+    return level.get(id)!;
+  };
+  const nodes: NodeSummary[] = g.nodes.filter(n => ids.has(n.id)).map(n => ({ ...n, level: levelOf(n.id) }));
+  return { nodes, edges, maxLevel: Math.max(0, ...nodes.map(n => n.level)) };
+}
+
+export function computeTransit(full: Graph, phase: number): TransitMap {
+  const graph = phaseGraph(full, phase);
+  const lines = buildLines(graph, phase);
   const lineIdx = new Map(lines.map((l, i) => [l.id, i]));
   const node = new Map(graph.nodes.map(n => [n.id, n]));
 
@@ -293,6 +320,8 @@ export function computeTransit(graph: Graph): TransitMap {
       level: n.level,
       words: n.words,
       readable: n.readable,
+      phase: n.phase,
+      transfer: n.phase !== phase,
       x: p.x,
       y: p.y,
       lines: ls,
@@ -351,6 +380,8 @@ export function computeTransit(graph: Graph): TransitMap {
       level: n.level,
       words: n.words,
       readable: n.readable,
+      phase: n.phase,
+      transfer: false,
       x: later!.x + 20 + i * COL,
       y: later!.y + 40,
       lines: [],
@@ -377,7 +408,38 @@ export function computeTransit(graph: Graph): TransitMap {
     h = Math.max(h, ey);
   }
 
-  return { width: Math.ceil(w + PAD), height: Math.ceil(h + PAD / 2), lines, stations, segments, labels, edgeLines, later };
+  return { phase, width: Math.ceil(w + PAD), height: Math.ceil(h + PAD / 2), lines, stations, segments, labels, edgeLines, later };
+}
+
+// ---------- Atlas: every zone ----------
+
+/** A station as its home zone knows it. */
+export type AtlasStation = { name: string; title: string; phase: number; words: number; readable: boolean; lines: string[] };
+
+export type Atlas = {
+  zones: { phase: number; name: string; map: TransitMap; readable: boolean }[];
+  /** Every zone's lines, and the lines drawing each needs edge. A trip can cross zones. */
+  lines: TLine[];
+  edgeLines: Record<string, string[]>;
+  stations: Record<string, AtlasStation>;
+};
+
+export function computeAtlas(graph: Graph): Atlas {
+  const zones = PHASES.filter(p => graph.nodes.some(n => n.phase === p)).map(phase => {
+    const map = computeTransit(graph, phase);
+    return { phase, name: PHASE_NAMES[phase], map, readable: map.stations.some(x => x.readable && !x.transfer) };
+  });
+  const stations: Record<string, AtlasStation> = {};
+  for (const { map } of zones)
+    for (const x of map.stations)
+      if (!x.transfer) stations[x.id] = { name: x.name, title: x.title, phase: x.phase, words: x.words, readable: x.readable, lines: x.lines };
+  return {
+    zones,
+    lines: zones.flatMap(z => z.map.lines),
+    // Each needs edge is drawn only in its target's zone, so the maps never disagree.
+    edgeLines: Object.assign({}, ...zones.map(z => z.map.edgeLines)),
+    stations,
+  };
 }
 
 // ---------- 3. Labels ----------
@@ -436,8 +498,10 @@ function placeLabels(stations: TStation[], polylines: Pt[][]): TLabel[] {
   for (const s of order) {
     const one = [s.name];
     const two = wrap(s.name);
-    const w1 = textWidth(s.name);
-    const w2 = Math.max(...two.map(textWidth));
+    // Transfers carry a small "Zone N" after the name (drawn at about 80% size).
+    const hint = s.transfer ? textWidth(` Zone ${s.phase}`) * 0.8 : 0;
+    const w1 = textWidth(s.name) + hint;
+    const w2 = Math.max(...two.map(textWidth)) + hint;
     const top = s.y - s.hh, bot = s.y + s.hh;
     const h2 = two.length * LINE_H;
     const diag = (x: number, y: number, dir: 1 | -1, len: number): Cap => ({

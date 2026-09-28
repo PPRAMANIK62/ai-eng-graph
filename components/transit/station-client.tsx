@@ -8,7 +8,7 @@ import { trailTo, type Graph } from "@/lib/graph";
 import { useHydrated, useUnderstood } from "@/lib/progress";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import type { LinkedNode } from "@/lib/graph";
-import type { TLine } from "./model";
+import type { AtlasStation, TLine } from "./model";
 import { mainLine, minutes, planTrip } from "./route";
 import { mapHref, stationHref, useTrip } from "./trip";
 import { transitFonts } from "./fonts";
@@ -17,7 +17,7 @@ import s from "./transit.module.css";
 
 const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
-export type StationInfo = Record<string, { name: string; words: number; readable: boolean }>;
+export type StationInfo = Record<string, AtlasStation>;
 
 type Seq = {
   mode: "route" | "line" | "none";
@@ -44,7 +44,8 @@ function useSequence(graph: Graph, lines: TLine[], edgeLines: Record<string, str
         to,
       };
     }
-    const main = mainLine(lines, id);
+    // Transfers ride other zones' lines too; the main line is one from the station's own zone.
+    const main = mainLine(lines.filter(l => l.phase === info[id].phase), id);
     if (main)
       return {
         mode: "line",
@@ -73,7 +74,7 @@ export function StationStrip({ graph, lines, edgeLines, info, id, serving }: Sha
   return (
     <div className={s.sign}>
       <div className={s.signTop}>
-        <Link href={mapHref(seq.to, id)} className={s.signBack}>
+        <Link href={mapHref(info[id].phase, seq.to, id)} className={s.signBack}>
           <ArrowLeft size={15} /> Map
         </Link>
         <span className={s.signWhere}>
@@ -202,7 +203,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : seq.mode === "route" && seq.index === seq.stops.length - 1 ? (
-          <Link href={mapHref(seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
             <span>
               <small>You&apos;ve arrived</small>
               Back to the map
@@ -210,7 +211,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : (
-          <Link href={mapHref(seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
             <span>
               <small>{seq.mode === "line" ? "End of the line" : "No next stop"}</small>
               Back to the map

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ChevronDown, X } from "lucide-react";
-import type { TransitMap } from "./model";
+import type { AtlasStation, TLine, TransitMap } from "./model";
 import { minutes, type Stop } from "./route";
 import { stationHref } from "./trip";
 import type { StationState } from "./transit-map";
@@ -14,6 +14,9 @@ const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
 type Props = {
   map: TransitMap;
+  /** Every zone's lines: a trip can ride lines drawn on other maps. */
+  lineById: Map<string, TLine>;
+  info: Record<string, AtlasStation>;
   stops: Stop[];
   to: string | null;
   rideIndex: number;
@@ -25,16 +28,14 @@ type Props = {
   onLineFocus: (id: string | null) => void;
 };
 
-export function RouteCard({ map, stops, to, rideIndex, stateOf, understood, onRide, onClear, lineFocus, onLineFocus }: Props) {
+export function RouteCard({ map, lineById, info, stops, to, rideIndex, stateOf, understood, onRide, onClear, lineFocus, onLineFocus }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   // On phones the line list stays folded until asked for, so the map gets the room.
   const [linesOpen, setLinesOpen] = useState(false);
   const view = to && stops.length ? "trip" : "lines";
   const open = view === "trip" ? !collapsed : linesOpen;
   const toggleSheet = () => (view === "trip" ? setCollapsed(c => !c) : setLinesOpen(o => !o));
-  const station = new Map(map.stations.map(x => [x.id, x]));
-  const line = new Map(map.lines.map(l => [l.id, l]));
-  const name = (id: string | null) => (id ? station.get(id)!.name : "");
+  const name = (id: string | null) => (id ? info[id].name : "");
 
   return (
     <aside className={s.card} data-view={view} data-collapsed={collapsed} data-lines-open={linesOpen} aria-label={view === "trip" ? "Your trip" : "Lines"}>
@@ -52,7 +53,9 @@ export function RouteCard({ map, stops, to, rideIndex, stateOf, understood, onRi
             transition={{ duration: 0.28, ease: EASE_OUT }}
           >
             <TripView
-              {...{ stops, to, rideIndex, stateOf, understood, onRide, onClear, station, line, name }}
+              {...{ stops, to, rideIndex, stateOf, understood, onRide, onClear, info, name }}
+              phase={map.phase}
+              line={lineById}
               collapsed={collapsed}
               onToggle={() => setCollapsed(c => !c)}
             />
@@ -119,22 +122,23 @@ function TripView({
   understood,
   onRide,
   onClear,
-  station,
+  info,
+  phase,
   line,
   name,
   collapsed,
   onToggle,
-}: Omit<Props, "lineFocus" | "onLineFocus" | "map"> & {
+}: Omit<Props, "lineFocus" | "onLineFocus" | "map" | "lineById"> & {
   to: string;
-  station: Map<string, TransitMap["stations"][number]>;
-  line: Map<string, TransitMap["lines"][number]>;
+  phase: number;
+  line: Map<string, TLine>;
   name: (id: string | null) => string;
   collapsed: boolean;
   onToggle: () => void;
 }) {
-  const total = stops.reduce((m, x) => m + minutes(station.get(x.id)!.words), 0);
+  const total = stops.reduce((m, x) => m + minutes(info[x.id].words), 0);
   const visited = stops.filter(x => understood.has(x.id));
-  const left = stops.filter(x => !understood.has(x.id)).reduce((m, x) => m + minutes(station.get(x.id)!.words), 0);
+  const left = stops.filter(x => !understood.has(x.id)).reduce((m, x) => m + minutes(info[x.id].words), 0);
   const current = stops[rideIndex];
   const changes = stops.filter(x => x.kind === "change" || x.kind === "back").length;
 
@@ -174,7 +178,7 @@ function TripView({
 
       <ol className={s.stops} key={to}>
         {stops.map((x, i) => {
-          const st = station.get(x.id)!;
+          const st = info[x.id];
           const l = x.line ? line.get(x.line) : undefined;
           const state = stateOf(x.id);
           const note =
@@ -210,6 +214,7 @@ function TripView({
                 )}
                 <button type="button" className={s.stopName} onClick={() => onRide(i)} aria-current={i === rideIndex ? "step" : undefined}>
                   {st.name}
+                  {st.phase !== phase && <span className={s.zoneTag}>Zone {st.phase}</span>}
                 </button>
                 <span className={s.stopMeta}>
                   {minutes(st.words)} min · <span data-state={state}>{state === "done" ? "visited" : state === "ready" ? "ready" : "earlier stops first"}</span>
