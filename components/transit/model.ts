@@ -78,7 +78,7 @@ const COLORS: { color: string; ink: string }[] = Array.from({ length: LINE_COUNT
 }));
 
 const SMALL = new Set(["of", "as", "and", "to", "the", "a", "in", "for", "vs"]);
-const ACRONYMS: Record<string, string> = { ai: "AI", llm: "LLM", kv: "KV", api: "API", rlhf: "RLHF", bpe: "BPE", xml: "XML" };
+const ACRONYMS: Record<string, string> = { ai: "AI", llm: "LLM", kv: "KV", api: "API", rlhf: "RLHF", bpe: "BPE", xml: "XML", rag: "RAG", mrr: "MRR", bm25: "BM25", hnsw: "HNSW", ui: "UI", dont: "Don’t" };
 
 /** "kv-cache" -> "KV Cache". Titles are questions, so station names come from ids. */
 export function stationName(id: string): string {
@@ -128,7 +128,10 @@ function buildLines(graph: Graph): TLine[] {
       if (!best || b.unc > best.unc || (b.unc === best.unc && b.len > best.len)) best = b;
     }
     if (!best || best.unc < 2) break;
-    paths.push(best.path);
+    // A new line starts where it leaves the tracks it shares, not back at the root.
+    let i = 0;
+    while (i < best.path.length - 2 && covered.has(key(best.path[i], best.path[i + 1]))) i++;
+    paths.push(best.path.slice(i));
     for (let i = 1; i < best.path.length; i++) covered.add(key(best.path[i - 1], best.path[i]));
   }
 
