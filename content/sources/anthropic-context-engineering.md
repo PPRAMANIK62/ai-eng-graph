@@ -38,6 +38,10 @@ Anthropic's engineering post on managing what goes into a model's context, mainl
 - Notes. "Structured note-taking, or agentic memory, is a technique where the agent regularly writes notes persisted to memory outside of the context window" (Structured note-taking; added 2026-09-27)
 - Sub-agents: each works in its own clean window and "returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)" (Sub-agent architectures; added 2026-09-27)
 - Won't go away with better models. "treating context as a precious, finite resource will remain central to building reliable, effective agents." (Conclusion; added 2026-09-27)
+- Notes pattern examples: "Like Claude Code creating a to-do list, or your custom agent maintaining a NOTES.md file, this simple pattern allows the agent to track progress across complex tasks." (Structured note-taking)
+- Claude playing Pokémon kept notes like "for the last 1,234 steps I've been training my Pokémon in Route 1, Pikachu has gained 8 levels toward the target of 10." and after context resets reads its own notes to carry on. (Structured note-taking)
+- Memory tool release: "a memory tool in public beta on the Claude Developer Platform that makes it easier to store and consult information outside the context window." (Structured note-taking)
+- How Claude Code compacts: "passing the message history to the model to summarize and compress the most critical details", then continuing with that "plus the five most recently accessed files." (Compaction)
 
 ## Visuals worth redrawing
 
