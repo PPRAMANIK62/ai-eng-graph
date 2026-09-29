@@ -3,7 +3,7 @@ id: anthropic-streaming
 title: Streaming messages
 author: Anthropic (Claude API docs)
 url: https://platform.claude.com/docs/en/build-with-claude/streaming
-published: undated (docs page, checked 2026-09-23)
+published: undated
 accessed: 2026-09-23
 kind: docs
 primary: true

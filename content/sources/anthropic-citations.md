@@ -3,7 +3,7 @@ id: anthropic-citations
 title: Citations (Claude API docs)
 author: Anthropic (Claude API docs)
 url: https://platform.claude.com/docs/en/build-with-claude/citations
-published: undated (docs page, checked 2026-09-27)
+published: undated
 accessed: 2026-09-27
 kind: docs
 primary: true

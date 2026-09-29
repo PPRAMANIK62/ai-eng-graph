@@ -3,7 +3,7 @@ id: huggingface-bpe-tokenization
 title: Byte-Pair Encoding tokenization (LLM Course, chapter 6.5)
 author: Hugging Face
 url: https://huggingface.co/learn/llm-course/chapter6/5
-published: 2026              # course page is undated; checked live 2026-09-23
+published: undated
 accessed: 2026-09-23
 kind: docs
 primary: false

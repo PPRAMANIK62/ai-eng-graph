@@ -3,7 +3,7 @@ id: streamdown-termination
 title: Unterminated Block Parsing (Streamdown docs)
 author: Vercel (Streamdown docs)
 url: https://streamdown.ai/docs/termination
-published: undated (checked 2026-09-27)
+published: undated
 accessed: 2026-09-27
 kind: docs
 primary: true

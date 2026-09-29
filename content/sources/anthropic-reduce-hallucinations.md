@@ -3,7 +3,7 @@ id: anthropic-reduce-hallucinations
 title: Reduce hallucinations
 author: Anthropic (Claude API docs)
 url: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
-published: undated (docs page, checked 2026-09-23)
+published: undated
 accessed: 2026-09-23
 kind: docs
 primary: true

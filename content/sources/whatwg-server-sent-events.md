@@ -3,7 +3,7 @@ id: whatwg-server-sent-events
 title: "HTML Living Standard: 9.2 Server-sent events"
 author: WHATWG
 url: https://html.spec.whatwg.org/multipage/server-sent-events.html
-published: living standard (continuously updated; read 2026-09-23)
+published: living standard (continuously updated)
 accessed: 2026-09-23
 kind: spec
 primary: true

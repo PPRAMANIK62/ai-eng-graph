@@ -3,7 +3,7 @@ id: vercel-ai-sdk-chatbot
 title: Chatbot (AI SDK UI, useChat)
 author: Vercel (AI SDK docs)
 url: https://ai-sdk.dev/docs/ai-sdk-ui/chatbot
-published: undated (AI SDK v7 docs, checked 2026-09-27)
+published: undated (AI SDK v7 docs)
 accessed: 2026-09-27
 kind: docs
 primary: true
