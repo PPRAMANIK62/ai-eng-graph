@@ -38,6 +38,9 @@ Anthropic's docs page on defining what success means for an LLM feature and then
 - Likert grading fits things fixed metrics can't capture: it's "ideal for evaluating nuanced aspects like empathy, professionalism, or patience that are difficult to quantify with traditional metrics." (Example evals: Likert)
 - Privacy criterion: "Can it follow instructions not to use or share certain details?" (Common success criteria)
 - Test cases can be generated: "Get Claude to help you generate more from a baseline set of example test cases." (after the examples)
+- Code-based grading, in full: "Fastest and most reliable, extremely scalable, but also lacks nuance for more complex judgments that require less rule-based rigidity." Its two examples: "Exact match: output == golden_answer" and "String match: key_phrase in output". (Grade your evaluations)
+- The exact-match example code normalizes before comparing: `model_output.strip().lower() == correct_answer.lower()`, over labels "positive", "negative", "neutral" or "mixed", with edge cases for sarcasm and mixed sentiment. (Example evals: exact match)
+- The ROUGE-L example scores each summary against a reference summary and prints the average ROUGE-L F1. (Example evals: ROUGE-L)
 
 ## Visuals worth redrawing
 

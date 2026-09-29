@@ -37,6 +37,11 @@ A practitioner's guide to building an eval system for one AI product, told throu
 - A/B tests are for mature products: "This level of evaluation is usually only appropriate for more mature products." (Level 3: A/B Testing)
 - The same setup serves debugging and fine-tuning data: "there is an incredibly large overlap between the infrastructure needed for evaluation and that for debugging." (Debugging)
 - Takeaways include "Don’t rely on generic evaluation frameworks to measure the quality of your AI." and "Write lots of tests and frequently update them." (Conclusion)
+- Three activities: evaluating quality, debugging, and changing the system. "Many people focus exclusively on #3 above, which prevents them from improving their LLM products beyond a demo." Doing all three well "creates a virtuous cycle". (Motivation)
+- Rechat made Lucy's final output editable "so that we could curate & fix data for fine-tuning." (Looking At Your Traces)
+- Fine-tuning data comes from the eval setup: "99% of the labor involved with fine-tuning is assembling high-quality data that covers your AI product’s surface area." With a solid eval system, "you already have a robust data generation and curation engine!" (Fine-Tuning)
+- Filtering generated fine-tuning data with the evals: "You can then use your Level 1 & Level 2 tests to filter out undesirable data that fails assertions or that the critique model thinks are wrong." (Data Synthesis & Curation)
+- "Evaluation systems create a flywheel that allows you to iterate very quickly." (Conclusion)
 
 ## Visuals worth redrawing
 

@@ -42,6 +42,22 @@ From `chapter-summaries.md`, Chapter 1:
 - The field is young. "we're still in the early stages of AI engineering, with countless more innovations yet to be built." (Chapter 1 summary)
 - Table 1-3 examples, consumer / enterprise (re-checked 2026-09-23): Coding: coding / coding. Image and video: photo and video editing, design / presentations, ad generation. Writing: email, social media and blog posts / copywriting, SEO, reports, memos, design docs. Education: tutoring, essay grading / employee onboarding, upskill training. Conversational bots: general chatbot, AI companion / customer support, product copilots. Information aggregation: summarization, talk-to-your-docs / summarization, market research. Data organization: image search, memex / knowledge management, document processing. Workflow automation: travel planning, event planning / data extraction, entry and annotation, lead generation. "Table 1-3. Common generative AI use cases across consumer and enterprise applications." (Chapter 1 summary)
 
+From `chapter-summaries.md`, Chapter 10 (AI Engineering Architecture and User Feedback):
+
+- Conversational feedback feeds the flywheel: the conversational interface "enables new types of user feedback, which you can leverage for analytics, product improvement, and the data flywheel." (Chapter 10 summary)
+- Engineers now own feedback design: "since user feedback is a crucial source of data for continuously improving AI models, more AI engineers are now becoming involved in the process to ensure they receive the data they need." (Chapter 10 summary)
+- The flywheel as an edge: "the increasing importance of data flywheel and product experience as competitive advantages." (Chapter 10 summary)
+- Observability means "understanding how your system fails, designing metrics and alerts around failures, and ensuring that your system is designed in a way that makes these failures detectable and traceable." (Chapter 10 summary)
+
+From `chapter-summaries.md`, Chapter 4 ("Evaluate AI Systems"):
+
+- For most app builders, the hard part is choosing a model, not building one. "for most application developers, the challenge is no longer in developing models but in selecting the right models for your application." (Chapter 4 summary)
+- What public benchmarks are good for. "Public benchmarks can help you weed out bad models, but won't help you find the best models for your applications." (Chapter 4 summary)
+- Why to distrust them. "Public benchmarks are also likely contaminated, as their data is included in the training data of many models." (Chapter 4 summary)
+- Leaderboards aggregate benchmarks in an unclear way. "how benchmarks are selected and aggregated is not a clear process." (Chapter 4 summary)
+- Model selection as your own leaderboard. "model selection is akin to creating a private leaderboard to rank models based on your needs." (Chapter 4 summary)
+- Host vs API is weighed on several axes. "this chapter outlined the pros and cons of each approach along seven axes, including data privacy, data lineage, performance, functionality, control, and cost." (Chapter 4 summary)
+
 ## Visuals worth redrawing
 
 - **Table 1-3, "Common generative AI use cases across consumer and enterprise applications"** (`chapter-summaries.md`, top of Chapter 1): eight categories (coding, image and video production, writing, education, conversational bots, information aggregation, data organization, workflow automation), each with consumer and enterprise examples. Mainly useful for `llm-use-cases`, but a trimmed version could show what AI engineers actually build.

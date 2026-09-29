@@ -52,6 +52,21 @@ Anthropic's engineering guide to evals, written for agents but with a vocabulary
 - Bigger sets later: "More mature agents may need larger, more difficult evals to detect smaller effects". (Step 0. Start early)
 - New models: "When a new model drops, running the suite quickly reveals which bets paid off." (Step 8)
 - Systematic human studies are "Relatively expensive and slow turnaround" and "Hard to run frequently". (Table: approaches for understanding agent performance)
+- Real failures make the suite realistic: "Converting user-reported failures into test cases ensures your suite reflects actual usage; prioritizing by user impact helps you invest effort where it counts." (Step 1)
+- Production monitoring "Catches issues that synthetic evals miss" but "Lacks ground truth for grading" and its "Signals can be noisy". User feedback "Skews toward severe issues" and "Users rarely explain why something failed". (Table: approaches for understanding agent performance)
+- When each applies: "Production monitoring kicks in post-launch to detect distribution drift and unanticipated real-world failures." Also: "triage feedback constantly, sample transcripts to read weekly". (How evals fit with other methods)
+- "no single evaluation layer catches every issue." (Swiss Cheese paragraph)
+- User feedback "Comes with real examples from actual human users" and "Surfaces problems you didn't anticipate". (Table: approaches for understanding agent performance)
+- Transcript. "A transcript (also called a trace or trajectory) is the complete record of a trial, including outputs, tool calls, reasoning, intermediate results, and any other interactions." (The structure of an evaluation)
+- Outcome. "The outcome is the final state in the environment at the end of the trial." (The structure of an evaluation)
+- Against rigid step checks: "There is a common instinct to check that agents followed very specific steps like a sequence of tool calls in the right order. We've found this approach too rigid and results in overly brittle tests, as agents regularly find valid approaches that eval designers didn't anticipate." (Design the eval harness and graders)
+- Partial credit: "A support agent that correctly identifies the problem and verifies the customer but fails to process a refund is meaningfully better than one that fails immediately." (Design the eval harness and graders)
+- Coding agents: "Deterministic graders are natural for coding agents because software is generally straightforward to evaluate: does the code run and do the tests pass?" (Evaluating coding agents)
+- Conversational agents "often require a second LLM to simulate the user." τ-bench and τ2-bench simulate retail and airline conversations "where one model plays a user persona". (Evaluating conversational agents)
+- Code graders can check "Tool calls verification (tools used, parameters)". (Types of graders for agents, code-based graders table)
+- SWE-bench Verified "grades solutions by running the test suite"; "LLMs have progressed from 40% to >80% on this eval in just one year." (Evaluating coding agents)
+- Loophole: "Opus 4.5 solved a 𝜏2-bench problem about booking a flight by discovering a loophole in the policy. It 'failed' the evaluation as written, but actually came up with a better solution for the user." (The structure of an evaluation)
+- Isolation: "Each trial should be 'isolated' by starting from a clean environment." Shared state "can cause correlated failures due to infrastructure flakiness rather than agent performance." (Design the eval harness and graders)
 
 ## Visuals worth redrawing
 
