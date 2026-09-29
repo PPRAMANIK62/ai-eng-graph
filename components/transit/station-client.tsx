@@ -24,7 +24,7 @@ type Seq = {
   mode: "route" | "line" | "none";
   /** The destination (route) or the line (line). */
   label: string;
-  stops: { id: string; color: string }[];
+  stops: { id: string; color: string; ink: string }[];
   index: number;
   to: string | null;
 };
@@ -34,13 +34,16 @@ function useSequence(graph: Graph, lines: TLine[], edgeLines: Record<string, str
   const { to: rawTo } = useTrip();
   const to = rawTo && info[rawTo]?.readable ? rawTo : null;
   return useMemo(() => {
-    const color = new Map(lines.map(l => [l.id, l.color]));
+    const byId = new Map(lines.map(l => [l.id, l]));
     if (to && trailTo(graph, to).includes(id)) {
       const stops = planTrip(graph, edgeLines, to);
       return {
         mode: "route",
         label: info[to].name,
-        stops: stops.map(x => ({ id: x.id, color: color.get(x.line ?? "") ?? "var(--t-ink-3)" })),
+        stops: stops.map(x => {
+          const l = byId.get(x.line ?? "");
+          return { id: x.id, color: l?.color ?? "var(--t-ink-3)", ink: l?.ink ?? "var(--t-on-ink)" };
+        }),
         index: stops.findIndex(x => x.id === id),
         to,
       };
@@ -51,11 +54,11 @@ function useSequence(graph: Graph, lines: TLine[], edgeLines: Record<string, str
       return {
         mode: "line",
         label: main.line.name,
-        stops: main.stops.map(x => ({ id: x, color: main.line.color })),
+        stops: main.stops.map(x => ({ id: x, color: main.line.color, ink: main.line.ink })),
         index: main.stops.indexOf(id),
         to,
       };
-    return { mode: "none", label: "", stops: [{ id, color: "var(--t-ink-3)" }], index: 0, to };
+    return { mode: "none", label: "", stops: [{ id, color: "var(--t-ink-3)", ink: "var(--t-on-ink)" }], index: 0, to };
   }, [graph, lines, edgeLines, info, id, to]);
 }
 
@@ -200,7 +203,7 @@ export function StationEnd(props: Shared) {
         </motion.button>
 
         {nextOk ? (
-          <Link href={stationHref(next.id, seq.to)} transitionTypes={NAV.forward} className={s.nextStop} style={{ "--c": next.color } as React.CSSProperties}>
+          <Link href={stationHref(next.id, seq.to)} transitionTypes={NAV.forward} className={s.nextStop} style={{ "--c": next.color, color: next.ink } as React.CSSProperties}>
             <span>
               <small>Next stop</small>
               {info[next.id].name}
@@ -208,7 +211,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : seq.mode === "route" && seq.index === seq.stops.length - 1 ? (
-          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)", color: "var(--t-on-ink)" } as React.CSSProperties}>
             <span>
               <small>You&apos;ve arrived</small>
               Back to the map
@@ -216,7 +219,7 @@ export function StationEnd(props: Shared) {
             <ArrowRight size={18} />
           </Link>
         ) : (
-          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)" } as React.CSSProperties}>
+          <Link href={mapHref(info[id].phase, seq.to, id)} transitionTypes={NAV.close} className={s.nextStop} style={{ "--c": "var(--t-ink)", color: "var(--t-on-ink)" } as React.CSSProperties}>
             <span>
               <small>{seq.mode === "line" ? "End of the line" : "No next stop"}</small>
               Back to the map
