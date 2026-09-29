@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Instructions that sit above the conversation and set the model's job. A priority signal, not a security boundary.
 needs: [chat-api]
-leads_to: [role-prompting, xml-tags, prompts-as-code]
+leads_to: [role-prompting, xml-tags, prompts-as-code, prompt-injection]
 compare_with: []
 updated: 2026-09-23
 ---

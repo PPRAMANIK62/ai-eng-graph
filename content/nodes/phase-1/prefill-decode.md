@@ -6,7 +6,7 @@ phase: 1
 note: >-
   The two stages of a call: read the whole prompt at once, then write one token at a time.
 needs: [transformer, next-token-prediction]
-leads_to: [kv-cache, token-pricing, streaming]
+leads_to: [kv-cache, token-pricing, streaming, llm-latency]
 compare_with: []
 updated: 2026-09-23
 ---

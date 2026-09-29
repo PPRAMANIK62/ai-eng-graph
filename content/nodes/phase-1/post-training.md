@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Turning a text predictor into an assistant: instruction tuning, preference tuning, and RL on tasks with checkable answers.
 needs: [pretraining]
-leads_to: [rlhf, reasoning-models, hallucination]
+leads_to: [rlhf, reasoning-models, hallucination, jailbreaks, fine-tuning]
 compare_with: []
 updated: 2026-09-23
 ---

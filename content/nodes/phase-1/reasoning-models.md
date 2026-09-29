@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Models trained to think in tokens before answering. More accurate on hard tasks, slower and pricier.
 needs: [post-training, chain-of-thought]
-leads_to: []
+leads_to: [distillation]
 compare_with: []
 updated: 2026-09-23
 ---

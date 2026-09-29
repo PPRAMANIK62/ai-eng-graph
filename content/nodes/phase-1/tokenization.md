@@ -6,7 +6,7 @@ phase: 1
 note: >-
   How text becomes the integer tokens a model actually sees, and why that explains odd behavior and pricing.
 needs: [next-token-prediction]
-leads_to: [bpe, embeddings, context-window, chunking]
+leads_to: [bpe, embeddings, context-window, chunking, vision-models, constrained-decoding]
 compare_with: []
 updated: 2026-09-23
 ---

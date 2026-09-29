@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Picking one token from the probability list: always the top one (greedy), or at random by weight.
 needs: [softmax, next-token-prediction]
-leads_to: [temperature, top-p]
+leads_to: [temperature, top-p, constrained-decoding]
 compare_with: []
 updated: 2026-09-23
 ---

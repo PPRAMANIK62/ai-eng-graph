@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Prompts kept in version control and tested like code.
 needs: [system-prompt]
-leads_to: []
+leads_to: [prompt-versioning]
 compare_with: []
 updated: 2026-09-23
 ---

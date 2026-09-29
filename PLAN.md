@@ -152,7 +152,8 @@ Skills: 9, 10.
 Concepts, roughly:
 - evals in depth (the basics are in phase 2): deterministic, human
   review, LLM-as-judge and its biases
-- synthetic test data, offline vs online evals
+- error analysis: reading real outputs and naming how they fail
+- synthetic test data, online evals (offline evals are the phase 2 basics)
 - the data flywheel
 - choosing a model: open vs closed, cost, latency, benchmarks, reasoning
   models
@@ -187,7 +188,8 @@ Skills: 13, 14.
 Concepts, roughly:
 - vision models, images and PDFs as input
 - turning documents into clean text
-- speech to text, text to speech
+- speech to text, text to speech, voice assistants (chained vs
+  speech-to-speech)
 - running open models locally, quantization
 - fine-tuning: when it beats prompting or retrieval, and when it doesn't
 

@@ -3,9 +3,8 @@
 Written 2026-09-23. **Not final.** This is a first guess at every node across
 all seven phases, so I can see where the project is going. Each phase still
 gets planned properly at its start (see `CLAUDE.md`), and these lists will
-change as I learn. Phases 1 and 2 now exist as node files in
-`content/nodes/`; for those, the files are the source of truth, not the
-tables here.
+change as I learn. Every phase now exists as node files in `content/nodes/`;
+the files are the source of truth, not the tables here.
 
 How to read the tables:
 - **needs** lists what to read first. `leads_to` is the mirror of `needs`,
@@ -20,12 +19,12 @@ How to read the tables:
 |---|---|---|---|---|
 | 1 | Foundations | 19 | 12 | 31 |
 | 2 | Retrieval | 11 | 13 | 24 |
-| 3 | Workflows and structured data | 6 | 5 | 11 |
+| 3 | Workflows and structured data | 6 | 6 | 12 |
 | 4 | Evals and choosing models | 6 | 8 | 14 |
 | 5 | Agents | 8 | 3 | 11 |
 | 6 | Production and security | 5 | 10 | 15 |
-| 7 | Beyond text, open models | 5 | 5 | 10 |
-| | | **60** | **56** | **116** |
+| 7 | Beyond text, open models | 5 | 6 | 11 |
+| | | **60** | **58** | **118** |
 
 That's a lot of writing. Roughly 61 × 2,000 + 54 × 700 words, around 160,000
 words. Phase 1 is the heaviest because everything else builds on it.
@@ -159,7 +158,8 @@ Changes from the first guess, and why:
 | `prompt-chaining` | short | Output of one call becomes input to the next. | llm-workflows | |
 | `parallel-calls` | short | Several calls at once, for speed or for voting. | llm-workflows | |
 | `routing` | deep | Classify the input first, then send it to the right prompt or model. | llm-workflows, classification | |
-| `evaluator-optimizer` | deep | One call writes, another checks, loop until it passes. | llm-workflows | |
+| `evaluator-optimizer` | deep | One call writes, another checks, loop until it passes. | llm-workflows, grounding | llm-as-judge |
+| `orchestrator-workers`* | short | One call splits the task into subtasks it picks at run time, workers do them, results get combined. | llm-workflows | multi-agent |
 | `extraction` | deep | Pulling structured fields out of messy text. | structured-output | |
 | `classification` | short | Putting inputs into fixed buckets with an LLM. | structured-output | |
 | `constrained-decoding` | deep | Forcing valid output by blocking tokens that would break the schema. | structured-output, sampling | |
@@ -175,11 +175,11 @@ Changes from the first guess, and why:
 | `llm-as-judge` | deep | A model grading another model's output. | evals | human-review |
 | `judge-bias` | short | Where judges go wrong: position, length, self-preference. | llm-as-judge | |
 | `synthetic-test-data` | short | Generating test cases with a model, and the traps in that. | evals | |
-| `offline-evals` | short | Scoring against a fixed test set before shipping. | evals | online-evals |
-| `online-evals` | short | Scoring real traffic after shipping. | evals | offline-evals |
-| `data-flywheel` | deep | Log real use, turn failures into test cases, fix, repeat. | offline-evals, online-evals | |
+| `error-analysis`* | short | Reading real outputs, naming the ways they fail, and counting them before you write evals. | evals | |
+| `online-evals` | short | Scoring real traffic after shipping, next to the fixed test set you run before. | evals | guardrails |
+| `data-flywheel` | deep | Log real use, turn failures into test cases, fix, repeat. | online-evals, error-analysis | |
 | `benchmarks` | deep | Public scores like MMLU and SWE-bench, what they measure, and contamination. | evals | |
-| `model-selection` | deep | Picking a model on my evals, cost and latency, not the leaderboard. | benchmarks, token-pricing | |
+| `model-selection` | deep | Picking a model on my evals, cost and latency, not the leaderboard. | benchmarks, token-pricing, llm-latency | |
 | `open-vs-closed-models` | deep | Open weights vs API-only: control, cost, quality, hosting. | model-selection | |
 | `llm-latency` | deep | Where time goes in a call and how to measure it. | prefill-decode | |
 | `time-to-first-token` | short | How long before the first token shows. What users feel. | llm-latency | |
@@ -193,7 +193,7 @@ Changes from the first guess, and why:
 | `react-pattern`* | short | The paper that named the reason-then-act loop. | agent-loop, chain-of-thought | |
 | `tool-design` | deep | Designing tools a model uses well: names, descriptions, errors, output size. | tool-calling | |
 | `agent-memory` | deep | What an agent keeps across steps and sessions, and where it lives. | agent-loop, context-engineering | |
-| `context-compaction` | short | Summarizing old turns so a long run fits in the window. | context-window, agent-memory | |
+| `context-compaction` | short | Shrinking old turns, by summary or by dropping tool output, so a long run fits in the window. | agent-memory, context-engineering | |
 | `mcp` | deep | Model Context Protocol: one standard way to plug tools and data into any model app. | tool-calling | |
 | `human-in-the-loop` | short | Pausing for a person to approve risky steps. | agent-loop | |
 | `sandboxing` | deep | Running agent actions where they can't do real damage. | agent-loop | |
@@ -206,13 +206,13 @@ Changes from the first guess, and why:
 | id | depth | note | needs | compare |
 |---|---|---|---|---|
 | `prompt-caching` | deep | Reusing the provider's work on a repeated prompt prefix. Cheaper and faster. | kv-cache | semantic-caching |
-| `semantic-caching` | short | Reusing a past answer when a new question means the same thing. | embeddings | prompt-caching |
+| `semantic-caching` | short | Reusing a past answer when a new question means the same thing. | semantic-search | prompt-caching |
 | `rate-limits` | short | Provider limits on requests and tokens, and designing around them. | chat-api | |
 | `retries` | short | Retrying failed calls with backoff and timeouts. | rate-limits | |
 | `provider-fallback` | short | Switching to a second provider when the first fails. | retries | |
-| `llm-tracing` | deep | Recording every call, prompt, token count and step so you can debug and measure. | llm-latency | |
+| `llm-tracing` | deep | Recording every call, prompt, token count, cost and step so you can debug and measure. | llm-latency | |
 | `prompt-versioning` | short | Tracking prompt versions and rolling back. | prompts-as-code | |
-| `model-upgrades` | short | Moving to a new model without breaking things: evals first. | offline-evals | |
+| `model-upgrades` | short | Moving to a new model without breaking things: evals first. | evals | |
 | `prompt-injection` | deep | Text in the input that takes over the model's instructions, directly or through retrieved content. | system-prompt | jailbreaks |
 | `jailbreaks` | short | Tricking a model past its own safety training. | post-training | prompt-injection |
 | `data-exfiltration` | deep | Data leaking out through tools and links when an agent reads untrusted content. | prompt-injection, tool-calling | |
@@ -230,11 +230,41 @@ Changes from the first guess, and why:
 | `document-parsing` | deep | Turning PDFs and scans into clean text and tables. | | pdf-input |
 | `speech-to-text` | short | Transcribing audio. | | |
 | `text-to-speech` | short | Generating speech from text, and the latency problem. | streaming | |
+| `voice-agents`* | short | Speech in, speech out: chained speech-to-text, LLM and text-to-speech, or one model for all three. | speech-to-text, text-to-speech | |
 | `local-models` | deep | Running an open model on your own machine. | open-vs-closed-models | |
 | `quantization` | deep | Storing weights in fewer bits: smaller and faster, some quality lost. | local-models | |
 | `fine-tuning` | deep | Training an existing model further on your own examples. When it beats prompting or RAG. | post-training | rag, few-shot-prompting |
 | `lora` | short | Fine-tuning a small add-on instead of the whole model. | fine-tuning | |
 | `distillation`* | short | Training a small model to copy a big one's outputs. | fine-tuning | |
+
+## Changes made when planning phases 3 to 7
+
+- `offline-evals` dropped: it's what `evals` (phase 2) already explains, a
+  fixed test set run before shipping. `online-evals` now compares with
+  `guardrails` instead, since both run on live traffic.
+- `error-analysis` added (phase 4, short): reading traces and naming
+  failure modes is the step the flywheel and every eval set start from.
+- `voice-agents` added (phase 7, short): the voice build has to choose
+  between a chained pipeline and a speech-to-speech model. It also gives
+  `speech-to-text` a node that needs it.
+- `human-review` and `agent-evals` notes fixed to match the sources (see
+  `_candidates.md`).
+- `context-compaction` needs `context-engineering`, which introduces
+  compaction; the node goes deeper (summary vs masking old tool output).
+- `semantic-caching` needs `semantic-search` rather than `embeddings`.
+- `llm-tracing` covers cost tracking too, since the phase 6 cost page is
+  built from traces. No separate `cost-tracking` node.
+- `model-selection` also needs `llm-latency`.
+- `orchestrator-workers` added (phase 3, short): the one workflow pattern
+  where the model picks the subtasks, the step between fixed workflows and
+  agents.
+- Links added after writing, where the articles already lean on each
+  other: `llm-as-judge` and `synthetic-test-data` need `error-analysis`,
+  `model-upgrades` needs `online-evals`, `document-parsing` needs `rag`,
+  `distillation` needs `reasoning-models`, `fine-tuning` compares with
+  `routing` and `classification`.
+- Still left out: `computer-use` and `query-rewriting`. No build step
+  needs them yet.
 
 ## Choices baked into this guess
 
@@ -254,8 +284,8 @@ Changes from the first guess, and why:
 
 ## Open questions for later phases
 
-- **Some shorts may be too small.** `offline-evals` and `online-evals` might
-  make sense only together. `retries` and `provider-fallback` might merge.
+- **Some shorts may be too small.** `retries` and `provider-fallback` might
+  merge.
 - **Missing on purpose:** math behind attention, training from scratch,
   anything about GPUs beyond what explains latency and cost. Out of scope
   per `PLAN.md`.

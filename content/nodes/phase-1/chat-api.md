@@ -6,7 +6,7 @@ phase: 1
 note: >-
   A list of messages with roles, sent every call. The model remembers nothing; some APIs store history for you, but you still pay for all of it.
 needs: [context-window]
-leads_to: [system-prompt, few-shot-prompting, structured-output, streaming]
+leads_to: [system-prompt, few-shot-prompting, structured-output, streaming, llm-workflows, batch-api, rate-limits]
 compare_with: []
 updated: 2026-09-23
 ---

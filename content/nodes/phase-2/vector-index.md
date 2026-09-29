@@ -7,7 +7,7 @@ note: >-
   Why exact nearest-neighbor search gets slow, and what approximate indexes trade away.
 needs: [semantic-search]
 leads_to: [hnsw]
-compare_with: []
+compare_with: [quantization]
 updated: 2026-09-27
 ---
 

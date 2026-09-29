@@ -6,8 +6,8 @@ phase: 2
 note: >-
   Retrieve relevant text, put it in the prompt, answer from it.
 needs: [semantic-search, chunking, context-window]
-leads_to: [grounding, retrieval-evaluation, context-engineering]
-compare_with: [long-context, fine-tuning]
+leads_to: [grounding, retrieval-evaluation, context-engineering, document-parsing]
+compare_with: [long-context, fine-tuning, agent-memory]
 updated: 2026-09-27
 ---
 

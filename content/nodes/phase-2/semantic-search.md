@@ -6,7 +6,7 @@ phase: 2
 note: >-
   Search by meaning: embed the query, find the nearest chunks.
 needs: [cosine-similarity, embedding-models]
-leads_to: [vector-index, hybrid-search, chunking, rag]
+leads_to: [vector-index, hybrid-search, chunking, rag, semantic-caching]
 compare_with: [bm25]
 updated: 2026-09-27
 ---

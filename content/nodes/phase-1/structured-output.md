@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Getting JSON that matches a schema instead of free text.
 needs: [chat-api]
-leads_to: []
+leads_to: [tool-calling, extraction, classification, constrained-decoding, schema-validation]
 compare_with: [citations]
 updated: 2026-09-23
 ---

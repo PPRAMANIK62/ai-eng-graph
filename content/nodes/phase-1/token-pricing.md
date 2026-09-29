@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Why output tokens cost several times more than input tokens.
 needs: [prefill-decode]
-leads_to: []
+leads_to: [model-selection]
 compare_with: []
 updated: 2026-09-23
 ---

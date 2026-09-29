@@ -6,7 +6,7 @@ phase: 2
 note: >-
   Answering only from the given sources, and nothing the model remembers.
 needs: [rag, hallucination]
-leads_to: [citations, saying-i-dont-know]
+leads_to: [citations, saying-i-dont-know, evaluator-optimizer]
 compare_with: []
 updated: 2026-09-27
 ---

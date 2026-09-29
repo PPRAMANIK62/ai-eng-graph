@@ -1743,6 +1743,11 @@ Reserves (both opened):
 Zheng et al. (llm-as-judge #1) also names all three biases.
 Also serves: llm-as-judge, benchmarks (Arena and AlpacaEval)
 
+### error-analysis (short)
+Added when phase 4 was planned. Notes made: `husain-shankar-error-analysis`
+(the evals FAQ entry on error analysis: traces, open coding, axial coding)
+and `husain-field-guide` (the Nurture Boss case).
+
 ### synthetic-test-data (short)
 1. **Q: What is the best approach for generating synthetic data?** by Hamel Husain and Shreya Shankar, 2025-06-01 (modified 2026-09-01)
    https://hamel.dev/blog/posts/evals-faq/what-is-the-best-approach-for-generating-synthetic-data.html
@@ -1756,7 +1761,7 @@ Also serves: llm-as-judge, benchmarks (Arena and AlpacaEval)
    Checked: Opened.
 Also serves: evals, data-flywheel
 
-### offline-evals (short)
+### offline-evals (short, dropped: covered by `evals`)
 1. **Q: How are evaluations used differently in CI/CD vs. monitoring production?** by Hamel Husain and Shreya Shankar, 2025-06-29 (modified 2026-09-01)
    https://hamel.dev/blog/posts/evals-faq/how-are-evaluations-used-differently-in-cicd-vs-monitoring-production.html
    kind: blog · primary: yes
@@ -2814,6 +2819,12 @@ Also serves: pdf-input (#4 compares "send to a general VLM" with parsing first),
    Why: Chained STT → LLM → TTS vs speech-to-speech: lower latency vs being able to see and swap each stage.
    Checked: Current.
 Also serves: streaming, speech-to-text (#3)
+
+### voice-agents (short)
+Added when phase 7 was planned. Notes made: `kramer-voice-ai-primer`
+(latency budget, turn detection, chained pipelines) and
+`openai-voice-agents` (chained vs speech-to-speech, promoted from the
+optional candidate under text-to-speech).
 
 ### local-models (deep)
 1. **llama.cpp (GitHub repo)** by ggml-org, undated, checked 2026-09-23

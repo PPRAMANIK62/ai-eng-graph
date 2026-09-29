@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Keeping attention results for past tokens so each new token doesn't redo the work.
 needs: [attention, prefill-decode]
-leads_to: []
+leads_to: [prompt-caching]
 compare_with: []
 updated: 2026-09-23
 ---

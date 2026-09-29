@@ -6,7 +6,7 @@ phase: 2
 note: >-
   Deciding what goes in the context window and what stays out.
 needs: [context-window, rag]
-leads_to: []
+leads_to: [agent-memory, context-compaction]
 compare_with: []
 updated: 2026-09-27
 ---

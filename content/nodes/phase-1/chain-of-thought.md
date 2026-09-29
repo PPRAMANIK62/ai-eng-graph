@@ -6,7 +6,7 @@ phase: 1
 note: >-
   Asking the model to reason step by step before it answers, and when that helps.
 needs: [next-token-prediction]
-leads_to: [reasoning-models]
+leads_to: [reasoning-models, react-pattern]
 compare_with: []
 updated: 2026-09-23
 ---

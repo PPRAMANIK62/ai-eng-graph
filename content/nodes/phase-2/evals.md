@@ -6,8 +6,8 @@ phase: 2
 note: >-
   Tests for AI features: a fixed set of inputs, a way to score outputs, a number to track.
 needs: [llm-use-cases]
-leads_to: [retrieval-evaluation, success-criteria]
-compare_with: []
+leads_to: [retrieval-evaluation, success-criteria, code-based-evals, human-review, llm-as-judge, error-analysis, synthetic-test-data, online-evals, benchmarks, agent-evals, model-upgrades]
+compare_with: [benchmarks]
 updated: 2026-09-27
 ---
 

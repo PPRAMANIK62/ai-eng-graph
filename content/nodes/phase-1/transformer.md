@@ -6,7 +6,7 @@ phase: 1
 note: >-
   The architecture behind LLMs: stacked attention and feed-forward layers. Concept level, no math derivations.
 needs: [attention]
-leads_to: [prefill-decode]
+leads_to: [prefill-decode, vision-models]
 compare_with: []
 updated: 2026-09-23
 ---
