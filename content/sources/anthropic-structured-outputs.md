@@ -33,6 +33,13 @@ Anthropic's guide to getting JSON that matches a schema from Claude. There are t
 - Complexity limits: at most 20 strict tools per request and 24 optional parameters across all strict schemas; each optional parameter "roughly doubles a portion of the grammar's state space". (Schema complexity limits)
 - Incompatible with citations (400 error) and with message prefilling. "Incompatible with JSON outputs" (Feature compatibility)
 - Worked example: extracting name, email, plan interest and whether a demo was requested from a sales email. (Example in JSON outputs quick start)
+- The pitch includes no retries. "Reliable: No retries needed for schema violations" (Why use structured outputs)
+- SDK transformation: the Python, TypeScript, Ruby and PHP SDKs remove unsupported constraints, put them into the field description, and validate the reply against your original schema. "This means Claude receives a simplified schema, but your code still enforces all constraints through validation." (How SDK transformation works)
+- Example. "A Pydantic field with minimum: 100 becomes a plain integer in the sent schema, but the SDK updates the description to "Must be at least 100" and validates the response against the original constraint." (How SDK transformation works)
+- Sending an unsupported feature directly gets a 400. "If you use an unsupported feature, you'll receive a 400 error with details." (JSON Schema limitations)
+- Reliability claim: "No retries needed for schema violations" (Why use structured outputs, benefits list)
+- JSON outputs vs strict tool use: JSON outputs control Claude's response format, strict tool use validates tool parameters. JSON outputs are listed for when you need to "Extract data from images or text". (When to use JSON outputs vs strict tool use)
+- Changing only a tool's `name` or `description` doesn't invalidate the grammar cache; changing the schema structure or the set of tools does. (Grammar compilation and caching)
 
 ## Visuals worth redrawing
 

@@ -16,9 +16,15 @@ A study asking whether forcing a model to answer in JSON, XML or similar formats
 ## Key claims
 
 - Structured generation is common in real apps. "Structured generation, the process of producing content in standardized formats like JSON and XML, is widely utilized in real-world applications" (abstract)
-- The question: do format constraints hurt reasoning and domain knowledge? "This study investigates whether such constraints on generation space impact LLMs abilities, including reasoning and domain knowledge comprehension." (abstract)
-- Headline finding. "we observe a significant decline in LLMs reasoning abilities under format restrictions." (abstract)
+- The question: do format constraints hurt reasoning and domain knowledge? "This study investigates whether such constraints on generation space impact LLMs’ abilities, including reasoning and domain knowledge comprehension." (abstract)
+- Headline finding. "we observe a significant decline in LLMs’ reasoning abilities under format restrictions." (abstract)
 - Stricter is worse. "stricter format constraints generally lead to greater performance degradation in reasoning tasks." (abstract)
+- Their "constrained decoding" setting was JSON mode, the provider flag that only promises valid JSON. "Among mainstream LLM providers, JSON mode is a widely implemented instance of this technique" (2, Constrained Decoding (JSON-mode))
+- Models: gpt-3.5-turbo-0125, claude-3-haiku-20240307, gemini-1.5-flash, LLaMA-3-8B-Instruct, Gemma-2-9B-Instruct. (3.2)
+- Key order explained a big drop. "we found that 100% of GPT 3.5 Turbo JSON-mode responses placed the "answer" key before the "reason" key, resulting in zero-shot direct answering instead of zero-shot chain-of-thought reasoning." (4, on the Last Letter task)
+- Classification went the other way. "JSON-mode performs competitively, and in some cases, surpasses the other three methodologies." (4, classification)
+- Their takeaway is task-dependent. "stringent formats may hinder reasoning-intensive tasks but enhance accuracy in classification tasks requiring structured outputs." (4)
+- Later addition with OpenAI's strict JSON schema on gpt-4o-mini (Table 2), NL / FRI / JSON-mode / JSON-schema: GSM8K 94.57 / 87.17 / 86.95 / 91.71; Shuffle Obj 82.85 / 81.46 / 76.43 / 81.77; Last Letter 83.11 / 84.73 / 76.00 / 86.07. (Structured output API paragraph, Table 2)
 
 ## Visuals worth redrawing
 

@@ -32,6 +32,9 @@ Anthropic's single reference page for prompting current Claude models (it replac
 - Examples with thinking. "Use `<thinking>` tags inside your few-shot examples to show Claude the reasoning pattern. It will generalize that style to its own extended thinking blocks." (Leverage thinking)
 - General beats prescriptive for thinking. "A prompt like "think thoroughly" often produces better reasoning than a hand-written step-by-step plan." (Leverage thinking)
 - Prefill is gone from Claude 4.6 on; for classification, use "tools with an enum field containing your valid labels or structured outputs." (Migrating away from prefilled responses)
+- Chaining is less needed now. "With adaptive thinking and subagent orchestration, Claude handles most multistep reasoning internally. Explicit prompt chaining (breaking a task into sequential API calls) is still useful when you need to inspect intermediate outputs or enforce a specific pipeline structure." (Chain complex prompts)
+- The most common chain is self-correction: "generate a draft → have Claude review it against criteria → have Claude refine based on the review. Each step is a separate API call so you can log, evaluate, or branch at any point." (Chain complex prompts)
+- Self-check inside one call: append something like "Before you finish, verify your answer against [test criteria]." It "catches errors reliably, especially for coding and math." Claude Opus 5 "is the exception: it verifies its own work well without explicit instruction", and carried-over verification instructions "can cause over-verification, adding tokens and latency." (Leverage thinking, "Ask Claude to self-check")
 
 ## Visuals worth redrawing
 
